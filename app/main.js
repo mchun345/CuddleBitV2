@@ -6,7 +6,6 @@ require('../css/mcinstructions.css');
 
 //require('../img/');
 
-
 main();
 
 function main() {

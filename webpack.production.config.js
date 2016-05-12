@@ -4,6 +4,7 @@ var pathToReact = path.resolve(node_modules, 'react/dist/react.min.js');
 
 config = {
     entry: path.resolve(__dirname, 'app/main.js'),
+   
     resolve: {
         alias: {
           'react': pathToReact
@@ -21,6 +22,10 @@ config = {
         },
         {
             test:/audiolet\.js/,
+            loaders: ['imports?this=>window', 'script']
+        },
+        {
+            test:/socket\.io\.js/,
             loaders: ['imports?this=>window', 'script']
         },
         {

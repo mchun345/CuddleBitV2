@@ -29,7 +29,7 @@ var KeyframeEditor = React.createClass({
 	
 	getDefaultProps: function() {
 	    return {
-	      height: 190,
+	      height: 90,
 	      width:"100%",
 	      circleColor:'#FF8400',
 	      selectedCircleColor:'#B05B00',
@@ -147,10 +147,10 @@ var KeyframeEditor = React.createClass({
 
 
 
-			var x = scaleX(tLeft);
-			var y = scaleY(vTop);
-			var width = scaleX(tRight) - x;
-			var height = scaleY(vBottom) - y;
+			var x = 106; //was scaleX(tLeft)
+			var y = 64; //was scaleY(vTop)
+			var width = 78; //was scaleX(tRight) - x;
+			var height = 62; //was scaleY(vBottom) - y;
 
 			selectionSquare = <rect
 				x={x}

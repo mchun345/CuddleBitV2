@@ -10,7 +10,9 @@ var AnimationWindow = React.createClass({
 	getDefaultProps: function() {
 		return {
 		      height: 50,
-		      width:'100%'
+		      width:'100%',
+		      frequency:50,
+		      amplitude:1
 		};
 
 	},
@@ -23,7 +25,6 @@ var AnimationWindow = React.createClass({
 			height:'25px',
 			display:'block'
 		};
-
 
 		var animationContent = <group />;
 		var viewBox = "0 0 100 100";
@@ -210,6 +211,18 @@ var AnimationWindow = React.createClass({
 					<path d="M 21.129179 43.552906 C 19.453439 42.952906 17.917343 40.752906 17.079473 42.952906 C 16.241603 45.152906 19.872374 47.752906 19.872374 47.752906 C 19.872374 47.752906 21.268824 48.552906 22.106694 47.352906 C 22.944564 46.152906 22.804919 44.152906 21.129179 43.552906 Z" stroke="black" stroke-linecap="round" stroke-linejoin="round" stroke-width=".25"/>
 					<path d="M 11.390629 41.379976 L 9.4051344 40.495977 L 6.6319416 46.72467 L 8.617436 47.60867 Z" fill="white"/>
 				</g>);
+		} else if (this.props.animation === "bit")
+		{
+			var transformation = "";
+			var frequency = this.props.frequency;
+			var amplitude = this.props.amplitude;
+			transformation += " translate(-25," + ((1-amplitude)*50) + ")";
+			transformation += "scale("+1.33+","+(1+amplitude)+")";
+			animationContent = (
+				<g>
+					<g transform={transformation} stroke="none" stroke-opacity="1" stroke-dasharray="none" fill="none" fill-opacity="1"><path d="M 82.275525 45.8 C 81.700727 42.346694 79.135463 38.983972 74.57973 36.339208 C 64.15274 30.285907 47.247262 30.285907 36.82027 36.339208 C 32.264538 38.983973 29.699274 42.346695 29.124477 45.800002 Z" fill="black"/></g>
+				</g>
+				);
 		}
 
 		
