@@ -11,7 +11,7 @@
     "express": "^4.13.3",
     "firebase": "^2.3.1",
     "imports-loader": "^0.6.4",
-    "johnny-five": "^0.8.95",
+    "johnny-five": "^0.9.44", 
     "react": "^0.13.3",
     "reflux": "^0.2.12",
     "script-loader": "^0.6.1",
@@ -26,6 +26,7 @@
     "file-loader": "^0.8.5",
     "node-libs-browser": "^0.5.2",
     "style-loader": "^0.12.4",
+    "url": "^0.11.0",
     "url-loader": "^0.5.7",
     "webpack": "^1.12.2"
   },

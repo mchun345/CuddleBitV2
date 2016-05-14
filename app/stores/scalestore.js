@@ -36,25 +36,25 @@ var scaleStore = Reflux.createStore({
 				scaleTimeline:stub_fn,
 				scaleParameter:{
 					amplitude:stub_fn,
-					frequency:stub_fn,
-					ampTex:stub_fn,
-					freqTex:stub_fn,
-					bias:stub_fn
+					frequency:stub_fn
+					//ampTex:stub_fn,
+					//freqTex:stub_fn,
+					//bias:stub_fn
 				},
 				leftOffset:0,
 				topOffsetParameter:{
 					amplitude:0,
-					frequency:0,
-					ampTex:0,
-					freqTex:0,
-					bias:0
+					frequency:0
+					//ampTex:0,
+					//freqTex:0,
+					//bias:0
 				}			
 			};
 
 		this._parameterValues[this._names[i]] = {};
 		this._duration[this._names[i]] = 0;
 		this._trackrange[this._names[i]] = {}
-		this._timelinerange[this._names[i]] = [0,3000]; //if set here, on init, won't get initial D3 errors
+		this._timelinerange[this._names[i]] = []; //if set here, on init, won't get initial D3 errors, wsa [0,3000]
 
 		}
 		
