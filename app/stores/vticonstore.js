@@ -64,7 +64,7 @@ var vticonStore = Reflux.createStore({
 							},
 
 							frequency: {
-								valueScale:[0.01,3], //Hz
+								valueScale:[50,500], //Hz
 								data : [
 									{ id: 1, t: 1500, value:1, selected:false}]
 							},
@@ -109,7 +109,7 @@ var vticonStore = Reflux.createStore({
 							},
 
 							frequency: {
-								valueScale:[0.01,3], //Hz , was [50,500]
+								valueScale:[50,500], //Hz , was [50,500]
 								data : [
 									{ id: 9, t: 1500, value:1, selected:false}]
 							},

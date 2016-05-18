@@ -63,6 +63,7 @@ var clipboardStore = Reflux.createStore({
 								selected:true
 							}
 								);
+							console.log("clipboard onCopy called");
 						}
 					}
 
@@ -70,8 +71,11 @@ var clipboardStore = Reflux.createStore({
 					{
 						LogStore.actions.log("COPY_"+n+"_"+keyframes_to_add.length+"_"+this._lowest_time+"_"+this._highest_time);
 						this._clipboard[p] = keyframes_to_add;
+						console.log("clipboard onCopy called multiple frames");
 					}
+
 				}
+				console.log(this._clipboard);
 				this.trigger(this._clipboard);
 
 			}
@@ -101,8 +105,10 @@ var clipboardStore = Reflux.createStore({
 								t:d.t,
 								value:d.value,
 								selected:true
+								
 							}
 								);
+							console.log("clipboard onCopyTimeRange called");
 						}
 					}
 
@@ -112,14 +118,17 @@ var clipboardStore = Reflux.createStore({
 								t:this._lowest_time,
 								value:this.interpolateParameter(p, this._lowest_time, this._vticons[n]),
 								selected:true
+								
 							}
 								);
+						console.log("clipboard onCopyTimeRange called endpoints 1");
 
 						keyframes_to_add.push(
 							{
 								t:this._highest_time,
 								value:this.interpolateParameter(p, this._highest_time, this._vticons[n]),
 								selected:true
+							
 							}
 								);
 					}
@@ -128,6 +137,7 @@ var clipboardStore = Reflux.createStore({
 					{
 						LogStore.actions.log("COPYTIME_"+n+"_"+keyframes_to_add.length+"_"+this._lowest_time+"_"+this._highest_time);
 						this._clipboard[p] = keyframes_to_add;
+						console.log("clipboard onCopyTimeRange called endpoints 3");
 					}
 				}
 				this.trigger(this._clipboard);
@@ -158,6 +168,7 @@ var clipboardStore = Reflux.createStore({
 				pasteCount+=1;
 			}
 		}
+		console.log("clipboard paste called");
 		LogStore.actions.log("PASTE_"+pasteCount);
 		VTIconStore.actions.newMultipleKeyframes(to_paste, overwrite=overwrite);
 	},
