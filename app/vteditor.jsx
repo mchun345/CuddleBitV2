@@ -146,7 +146,7 @@ var VTEditor = React.createClass({
 			playheadFill:"red",
 			timelineLeftOffset:60,
 			timelineRightOffset:20,
-			examplesModifiable:false, //was true
+			examplesModifiable:true, //was true
 			playbackAtEndOfVTIcon:false
 		}
 
@@ -204,8 +204,10 @@ var VTEditor = React.createClass({
    					if (this.state.vticons["example"].selected && (this.state.study.currentMode == this.state.study.modes.LOWVIS_HIGHSELECT))
    					{
    						ClipboardStore.actions.copyTimeRange();
+   						console.log("COPIED Time Range");
    					} else {
    						ClipboardStore.actions.copy();
+   						console.log("COPIED");
    					}
    				}
    				break;
@@ -217,6 +219,7 @@ var VTEditor = React.createClass({
    					if (this.props.examplesModifiable || !this.state.vticons["example"].selected)
    					{
 	   					ClipboardStore.actions.paste();
+	   					console.log("PASTED");
    					}
    				}
    				break;
