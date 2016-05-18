@@ -27,7 +27,7 @@ var IconVis = React.createClass({
 
 	getDefaultProps: function() {
 	    return {
-	      height: 25,
+	      height: 50, //was 25
 	      width:'100%',
 	      visColor:'#4C4233',
 	      background:"#FAFAFA",
@@ -36,7 +36,7 @@ var IconVis = React.createClass({
 	      limitFrequencies:true,
   	      selectionColor:'#676767',
 	      selectionOpacity:0.2,
-  	      selectable:false,
+  	      selectable:false, //was false
 	  	  logValues:false
 	    }
 	},

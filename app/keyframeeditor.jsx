@@ -29,7 +29,7 @@ var KeyframeEditor = React.createClass({
 	
 	getDefaultProps: function() {
 	    return {
-	      height: 90,
+	      height: 190,
 	      width:"100%",
 	      circleColor:'#FF8400',
 	      selectedCircleColor:'#B05B00',
@@ -126,9 +126,16 @@ var KeyframeEditor = React.createClass({
 
 		
 		var selectable = this.props.selectable;
+
+		
 		//selection square
 		var selectionSquare = <rect />;
+
+		
+
 		if(selectable && this.props.vticon.selected && this.props.selection.active) {
+
+			
 			var tLeft = this.props.selection.time1;
 			var tRight = this.props.selection.time2;
 			if(tLeft > tRight) {
@@ -147,10 +154,10 @@ var KeyframeEditor = React.createClass({
 
 
 
-			var x = 106; //was scaleX(tLeft)
-			var y = 64; //was scaleY(vTop)
-			var width = 78; //was scaleX(tRight) - x;
-			var height = 62; //was scaleY(vBottom) - y;
+			var x = scaleX(tLeft); //was scaleX(tLeft);
+			var y = scaleY(vTop); //was scaleY(vTop);
+			var width = scaleX(tRight) - x; //was scaleX(tRight) - x;
+			var height = scaleY(vBottom) - y; //was scaleY(vBottom) - y;
 
 			selectionSquare = <rect
 				x={x}
