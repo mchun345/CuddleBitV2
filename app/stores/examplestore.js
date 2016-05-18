@@ -7,25 +7,25 @@ var EXAMPLE_KEY = "example"; //TODO: More general?
 
 
 var sineExample = function(frequency, duration, dt) {
-	var rv = {};
-	rv.duration = duration;
-	rv.selected=false;
-	rv.selectedTimeRange={
-						active:false,
-						time1:0,
-						time2:0
-					};
+  var rv = {};
+  rv.duration = duration;
+  rv.selected=false;
+  rv.selectedTimeRange={
+            active:false,
+            time1:0,
+            time2:0
+          };
 
-	rv.parameters = {
-				amplitude: {
-					valueScale:[0,1], //normalized
-					data : []
-				},
+  rv.parameters = {
+        amplitude: {
+          valueScale:[0,1], //normalized
+          data : []
+        },
 
-				frequency: {
-					valueScale:[50,500], //Hz
-					data : [
-						{
+        frequency: {
+          valueScale:[50,500], //Hz
+          data : [
+            {
           "t": 1025.1572327044023,
           "value": 312.50000000000057,
         },
@@ -33,65 +33,97 @@ var sineExample = function(frequency, duration, dt) {
           "t": 1943.3962264150944,
           "value": 157.4999999999999,
         }]
-				}
-			};
+        },
+        ampTex: { //testing
+          valueScale:[0,1], //normalized
+          data :[
+          { id: 2, t: 1500, value:0.5, selected:false}]
+        },
+        freqTex: {
+                valueScale:[10,50], //Hz
+                data : [
+                  { id: 3, t: 1500, value:25, selected:false}]
+              },
 
-	for (var t = 0; t < duration; t+=dt)
-	{
-		rv.parameters.amplitude.data.push(
-			{
-				t:t,
-				value:Math.sin(2*Math.PI*frequency*t/1000 - Math.PI/2*frequency)/2.0+0.5
-			});
-	}
+        bias: {
+            valueScale:[0.10,0.90], //normalized
+            data : [
+             { id: 4, t: 1500, value:0.5, selected:false}]
+        }
+      };
 
-	return rv;
+  for (var t = 0; t < duration; t+=dt)
+  {
+    rv.parameters.amplitude.data.push(
+      {
+        t:t,
+        value:Math.sin(2*Math.PI*frequency*t/1000 - Math.PI/2*frequency)/2.0+0.5
+      });
+  }
+
+  return rv;
 };
 
 
 var randomNoiseExample = function(duration, dt) {
-	var rv = {};
-	rv.duration = duration;
-	rv.selected=false;
-	rv.selectedTimeRange={
-						active:false,
-						time1:0,
-						time2:0
-					};
+  var rv = {};
+  rv.duration = duration;
+  rv.selected=false;
+  rv.selectedTimeRange={
+            active:false,
+            time1:0,
+            time2:0
+          };
 
-	rv.parameters = {
-				amplitude: {
-					valueScale:[0,1], //normalized
-					data : []
-				},
+  rv.parameters = {
+        amplitude: {
+          valueScale:[0,1], //normalized
+          data : []
+        },
 
-				frequency: {
-					valueScale:[50,500], //Hz
-					data : []
-				}
-			};
+        frequency: {
+          valueScale:[50,500], //Hz
+          data : []
+        },
+        ampTex: { //testing
+          valueScale:[0,1], //normalized
+          data :[
+          { id: 2, t: 1500, value:0.5, selected:false}]
+        },
+        freqTex: {
+                valueScale:[10,50], //Hz
+                data : [
+                  { id: 3, t: 1500, value:25, selected:false}]
+              },
 
-	for (var t = 0; t < duration; t+=dt)
-	{
-		//TODO: Make this use "seedrandom" package
-			rv.parameters.frequency.data.push(
-			{
-				t:t,
-				value:Math.random()*(rv.parameters.frequency.valueScale[1]-rv.parameters.frequency.valueScale[0])+rv.parameters.frequency.valueScale[0]
-			});
+        bias: {
+            valueScale:[0.10,0.90], //normalized
+            data : [
+             { id: 4, t: 1500, value:0.5, selected:false}]
+        }
+      };
 
-		rv.parameters.amplitude.data.push(
-			{
-				t:t,
-				value:Math.random()
-			});
-	}
+  for (var t = 0; t < duration; t+=dt)
+  {
+    //TODO: Make this use "seedrandom" package
+      rv.parameters.frequency.data.push(
+      {
+        t:t,
+        value:Math.random()*(rv.parameters.frequency.valueScale[1]-rv.parameters.frequency.valueScale[0])+rv.parameters.frequency.valueScale[0]
+      });
 
-	return rv;
+    rv.parameters.amplitude.data.push(
+      {
+        t:t,
+        value:Math.random()
+      });
+  }
+
+  return rv;
 };
 
 var examples = {
-	v4: {
+  v4: {
   "duration": 3000,
   "selected": true,
   "selectedTimeRange": {
@@ -271,11 +303,27 @@ var examples = {
           "selected": true
         }
       ]
-    }
+    },
+    "ampTex": { //testing
+          "valueScale":[0,1], //normalized
+          "data" :[
+          { "id": 2, "t": 1500, "value":0.5, "selected":false}]
+        },
+        "freqTex": {
+                "valueScale":[10,50], //Hz
+                "data" : [
+                  { "id": 3, "t": 1500, "value":25, "selected":false}]
+              },
+
+        "bias": {
+            "valueScale":[0.10,0.90], //normalized
+            "data" : [
+             { "id": 4, "t": 1500, "value":0.5, "selected":false}]
+        }
   }
 },
 
-	v3: {
+  v3: {
   "duration": 3000,
   "selectedTimeRange": {
     "active": false,
@@ -431,9 +479,26 @@ var examples = {
           "id": 200
         }
       ]
-    }
-  }
-},
+    },
+    "ampTex": { //testing
+          "valueScale":[0,1], //normalized
+          "data" :[
+          { "id": 2, "t": 1500, "value":0.5, "selected":false}]
+        },
+        "freqTex": {
+                "valueScale":[10,50], //Hz
+                "data" : [
+                  { "id": 3, "t": 1500, "value":25, "selected":false}]
+              },
+
+        "bias": {
+            "valueScale":[0.10,0.90], //normalized
+            "data" : [
+             { "id": 4, "t": 1500, "value":0.5, "selected":false}]
+        }
+   }
+  
+ },
 
 sineExample: sineExample(1, 3000, 25),
 
@@ -604,7 +669,8 @@ v10_augmented: { //w/ v-10-21-3-11
           "selected": false,
           "id": 1166
         }
-      ]
+      ],
+
     },
     "frequency": {
       "valueScale": [
@@ -661,7 +727,23 @@ v10_augmented: { //w/ v-10-21-3-11
           "id": 1168
         }
       ]
-    }
+    },
+    "ampTex": { //testing
+          "valueScale":[0,1], //normalized
+          "data" :[
+          { "id": 2, "t": 1500, "value":0.5, "selected":false}]
+        },
+        "freqTex": {
+                "valueScale":[10,50], //Hz
+                "data" : [
+                  { "id": 3, "t": 1500, "value":25, "selected":false}]
+              },
+
+        "bias": {
+            "valueScale":[0.10,0.90], //normalized
+            "data" : [
+             { "id": 4, "t": 1500, "value":0.5, "selected":false}]
+        }
   }
 },
 
@@ -942,11 +1024,28 @@ v10_09_1_8: {
           "id": 377
         }
       ]
-    }
+    },
+    "ampTex": { //testing
+          "valueScale":[0,1], //normalized
+          "data" :[
+          { "id": 2, "t": 1500, "value":0.5, "selected":false}]
+        },
+        "freqTex": {
+                "valueScale":[10,50], //Hz
+                "data" : [
+                  { "id": 3, "t": 1500, "value":25, "selected":false}]
+              },
+
+        "bias": {
+            "valueScale":[0.10,0.90], //normalized
+            "data" : [
+             { "id": 4, "t": 1500, "value":0.5, "selected":false}]
+        }
+  
   }
 },
 
-	textures: {
+  textures: {
   "duration": 3000,
   "selectedTimeRange": {
     "active": false,
@@ -1312,60 +1411,78 @@ v10_09_1_8: {
           "selected": false
         }
       ]
-    }
+    },
+
+    "ampTex": { //testing
+          "valueScale":[0,1], //normalized
+          "data" :[
+          { "id": 2, "t": 1500, "value":0.5, "selected":false}]
+        },
+        "freqTex": {
+                "valueScale":[10,50], //Hz
+                "data" : [
+                  { "id": 3, "t": 1500, "value":25, "selected":false}]
+              },
+
+        "bias": {
+            "valueScale":[0.10,0.90], //normalized
+            "data" : [
+             { "id": 4, "t": 1500, "value":0.5, "selected":false}]
+        }
+  
   }
 },
 };
 
 var exampleActions = Reflux.createActions(
-	[
-		'selectExample'
-	]);
+  [
+    'selectExample'
+  ]);
 
 
 var exampleStore = Reflux.createStore({
 
-	listenables: [exampleActions],
+  listenables: [exampleActions],
 
-	init() { 
-		this._data = { 
-			selected:"test1",  
-			examples:examples 
-		};
-	},
+  init() { 
+    this._data = { 
+      selected:"test1",  
+      examples:examples 
+    };
+  },
 
-	getInitialState() {
-		return this._data;
-	},
+  getInitialState() {
+    return this._data;
+  },
 
-	onSelectExample(newName) { 
-		var foundName = "";
-		for (var ex in this._data.examples) {
-			if (ex === newName)
-			{
-				foundName = ex;
-			}
-		}
+  onSelectExample(newName) { 
+    var foundName = "";
+    for (var ex in this._data.examples) {
+      if (ex === newName)
+      {
+        foundName = ex;
+      }
+    }
 
-		if (foundName != "")
-		{
-			this._data.selected=foundName;
-			for (var ex in this._data.examples) {
-				this._data.examples[ex].selected = (ex === foundName);
-			}
-			VTIconStore.actions.setVTIcon(this._data.examples[foundName], name=EXAMPLE_KEY);
+    if (foundName != "")
+    {
+      this._data.selected=foundName;
+      for (var ex in this._data.examples) {
+        this._data.examples[ex].selected = (ex === foundName);
+      }
+      VTIconStore.actions.setVTIcon(this._data.examples[foundName], name=EXAMPLE_KEY);
       PlaybackStore.actions.setTime(0);
       LogStore.actions.log("EXAMPLE_SELECT_"+foundName); //this causes a firebase error that we probably have to check for in there
     }
 
-		this.trigger(this._data);
-	}
+    this.trigger(this._data);
+  }
 
 });
 
 
 module.exports = {
-	actions:exampleActions,
-	store:exampleStore
+  actions:exampleActions,
+  store:exampleStore
 };
 

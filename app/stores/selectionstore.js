@@ -32,7 +32,20 @@ var selectStore = Reflux.createStore({
 				amplitude: {
 					value1: 0,
 					value2: 0
+				}, //testing
+				ampTex: {
+					value1: 0,
+					value2: 0
+				},
+				freqTex: {
+					value1: 0,
+					value2: 0
+				},
+				bias: {
+					value1: 0,
+					value2: 0
 				}
+
 			}
 
 		};
