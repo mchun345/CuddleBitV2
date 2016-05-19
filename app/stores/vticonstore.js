@@ -31,7 +31,7 @@ var vticonActions = Reflux.createActions(
 
 		'undo',
 		'redo',
-		'reset',
+		'reset', 
 
 		'deleteSelectedKeyframes'
 	]
