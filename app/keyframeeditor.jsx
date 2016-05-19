@@ -29,7 +29,7 @@ var KeyframeEditor = React.createClass({
 	
 	getDefaultProps: function() {
 	    return {
-	      height: 190,
+	      height: 80, //was 190, works to shrink editor elements well
 	      width:"100%",
 	      circleColor:'#FF8400',
 	      selectedCircleColor:'#B05B00',
@@ -47,6 +47,10 @@ var KeyframeEditor = React.createClass({
 	    }
 	},
 
+    // init: function(){
+    //     console.log("Initial topoffset");
+    // 	console.log(this.refs.divWrapper.getDOMNode().offsetTop);
+    // },
 
 	componentDidMount: function () {
     	var parameter_range = [this.props.height-this.props.keyframeCircleRadius, this.props.keyframeCircleRadius+this.props.topBuffer];
@@ -54,11 +58,14 @@ var KeyframeEditor = React.createClass({
     	this._lastMouseDownTime = 0;
 
     	ScaleStore.actions.setTrackrange(this.props.name, this.props.parameter, parameter_range); 
-    	ScaleStore.actions.setTopOffset(this.props.name, this.props.parameter, this.refs.divWrapper.getDOMNode().offsetTop) ;
+    	ScaleStore.actions.setTopOffset(this.props.name, this.props.parameter, this.refs.divWrapper.getDOMNode().offsetTop);
+
+
 	},
 
 
 	render : function() {
+
 
 		var keyframeCircleRadius = this.props.keyframeCircleRadius;
 		var circleColor = this.props.circleColor;
@@ -278,6 +285,13 @@ var KeyframeEditor = React.createClass({
 
 	        var x = e.clientX - this.state.offsetLeft;
 	        var y = e.clientY - this.state.offsetTop;
+          
+            // console.log("Current topoffset");
+            // console.log(this.state.setTopOffset);
+            // console.log("Current offsetLeft");
+            // console.log(this.state.offsetLeft);
+
+
 
 	        VTIconStore.actions.newKeyframe(this.props.parameter, this.props.scaleX.invert(x), scaleY.invert(y), e.shiftKey, name=this.props.name);
 	        DragStore.actions.startKeyframeDrag(this.props.name, e.shiftKey);

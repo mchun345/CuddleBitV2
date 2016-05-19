@@ -66,7 +66,7 @@ var vticonStore = Reflux.createStore({
 							frequency: {
 								valueScale:[50,500], //Hz
 								data : [
-									{ id: 1, t: 1500, value:1, selected:false}]
+									{ id: 1, t: 1500, value:300, selected:false}]
 							},
 							ampTex: {
 								valueScale:[0,1], //normalized
