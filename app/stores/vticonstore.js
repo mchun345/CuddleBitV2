@@ -31,6 +31,7 @@ var vticonActions = Reflux.createActions(
 
 		'undo',
 		'redo',
+		'reset', 
 
 		'deleteSelectedKeyframes'
 	]
@@ -728,6 +729,105 @@ var vticonStore = Reflux.createStore({
 	 	}
 
 	 },
+
+	 //for resetting to init data settings
+	 onReset() {
+	 	this._data = {
+
+					main: { //left side editor
+						duration: 3000, //ms //was 3000
+
+						selected: true,
+
+						selectedTimeRange: {
+							active:false,
+							time1:0,
+							time2:0
+						},
+
+						parameters: {
+							amplitude: {
+								valueScale:[0,1], //normalized
+								data : [
+									{ id: 0, t: 1500, value:0.5, selected:false}]
+							},
+
+							frequency: {
+								valueScale:[50,500], //Hz
+								data : [
+									{ id: 1, t: 1500, value:300, selected:false}]
+							},
+							ampTex: {
+								valueScale:[0,1], //normalized
+								data : [
+									{ id: 2, t: 1500, value:0.5, selected:false}]
+							},
+							freqTex: {
+								valueScale:[10,50], //Hz
+								data : [
+									{ id: 3, t: 1500, value:25, selected:false}]
+							},
+
+							bias: {
+								valueScale:[0.10,0.90], //normalized
+								data : [
+									{ id: 4, t: 1500, value:0.5, selected:false}]
+							}
+
+						}
+					},
+
+					example: { //right side editor
+						duration: 3000, //ms 
+
+						selected: true,  
+
+						selectedTimeRange: {
+							active:false, 
+							time1:0, 
+							time2:0 
+						},
+
+						parameters: {
+							amplitude: {
+								valueScale:[0,1], 
+								data : [
+									{ id: 6, t: 600, value:0.5, selected:false},  
+									{ id: 7, t: 1500, value:1, selected:false},   
+									{ id: 8, t: 3000, value:0, selected:false}]   
+							},
+
+							frequency: {
+								valueScale:[50,500], //Hz , was [50,500]
+								data : [
+									{ id: 9, t: 1500, value:1, selected:false}]
+							},
+
+							ampTex: {
+								valueScale:[0,1], //normalized
+								data : [
+									{ id: 2, t: 1500, value:0.5, selected:false}]
+							},
+							freqTex: {
+								valueScale:[10,50], //Hz
+								data : [
+									{ id: 3, t: 1500, value:25, selected:false}]
+							},
+
+							bias: {
+								valueScale:[0.10,0.90], //normalized
+								data : [
+									{ id: 12, t: 1500, value:0.5, selected:false}]
+
+									
+							}
+						}
+					}
+						
+					};
+
+					this.trigger(this._data);
+	 }, 
 
 	/**
 	* KFUID helper functions
