@@ -124,6 +124,9 @@ var scaleStore = Reflux.createStore({
 	},
 
 	onSetTopOffset(name, parameter, offset) {
+
+		
+
 		this._data[name].topOffsetParameter[parameter] = offset;
 
 		this._update();

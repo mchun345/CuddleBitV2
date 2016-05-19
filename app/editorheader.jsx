@@ -210,14 +210,15 @@ var EditorHeader = React.createClass({
 			// </div>
 
 			<div className="header" style={headerStyle}>
-				{startButton}
+				
 				<span className="title unselectable"> Editor </span>
-				{animationOptionDisplay}
+			
 				{interfaceModeDisplay}
 				{saveButton}
 				{loadButton}
 				{testButton}
 				{renderButton}
+				{startButton}
 				{stopButton}
 			</div>
 			);
