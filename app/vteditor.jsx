@@ -373,11 +373,7 @@ var VTEditor = React.createClass({
 			<div id="app" ref="appRef">
 				<EditorHeader />
 				<SoundGen frequency={frequency} amplitude={amplitude_for_soundgen} mute={this.state.playback.mute} />
-				<AnimationWindow
-						name="main"
-						animation={this.state.animation.animation}
-						animationParameters={this.state.animation.animationParameters}
-						frequency={frequency} amplitude={amplitude_for_soundgen}/>
+				
 
 				<div name="main" id="maineditor" ref="mainEditorRef" style={designStyle}>
 					<ControlBar
