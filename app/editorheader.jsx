@@ -17,6 +17,9 @@ var UserInstructions = require('./userinstructions.jsx');
 var IO = require('./../thirdparty/socket/socket.io.js');
 var socket = io();
 
+//for reset button
+var VTIconStore = require('./stores/vticonstore.js');
+
 
 var EditorHeader = React.createClass({
 
@@ -38,6 +41,7 @@ var EditorHeader = React.createClass({
 			displayTestButton:true,
 			displayRenderButton:true,
 			displayStopButton:true,
+			displayResetButton:true,
 			uploadFileID:"uploadedFile"
 
 
@@ -83,6 +87,10 @@ var EditorHeader = React.createClass({
 
 	_onStopClick : function(e) {
 		socket.emit('stop_render');
+	},
+
+	_onResetClick : function(e) {
+		VTIconStore.actions.reset();
 	},
 
 	/**
@@ -187,6 +195,12 @@ var EditorHeader = React.createClass({
 			stopButton = (<button onClick={this._onStopClick}>Stop</button>);
 		}
 
+		var resetButton = <span />
+		if (this.props.displayResetButton)
+		{
+			resetButton = (<button onClick={this._onResetClick}>Reset</button>);
+		}
+
 
 		return (
 			// <div className="header" style={headerStyle}>
@@ -220,6 +234,7 @@ var EditorHeader = React.createClass({
 				{renderButton}
 				{startButton}
 				{stopButton}
+				{resetButton}
 			</div>
 			);
 	}
