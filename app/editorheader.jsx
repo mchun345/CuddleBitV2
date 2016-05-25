@@ -42,6 +42,7 @@ var EditorHeader = React.createClass({
 			displayRenderButton:true,
 			displayStopButton:true,
 			displayResetButton:true,
+			displayGetSetPointsButton:true,
 			uploadFileID:"uploadedFile"
 
 
@@ -91,6 +92,9 @@ var EditorHeader = React.createClass({
 
 	_onResetClick : function(e) {
 		VTIconStore.actions.reset();
+	},
+	_onGetSetPointsClick : function(e) {
+		socket.emit('get_setPoints');
 	},
 
 	/**
@@ -200,7 +204,11 @@ var EditorHeader = React.createClass({
 		{
 			resetButton = (<button onClick={this._onResetClick}>Reset</button>);
 		}
-
+		var getSetPointsButton = <span />
+		if (this.props.displayGetSetPointsButton)
+		{
+			getSetPointsButton = (<button onClick={this._onGetSetPointsClick}>Get set points</button>);
+		}
 
 		return (
 			// <div className="header" style={headerStyle}>
@@ -235,6 +243,7 @@ var EditorHeader = React.createClass({
 				{startButton}
 				{stopButton}
 				{resetButton}
+				{getSetPointsButton}
 			</div>
 			);
 	}
