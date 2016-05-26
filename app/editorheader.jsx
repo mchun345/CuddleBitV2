@@ -14,8 +14,8 @@ var UserAgreement = require('./useragreement.jsx');
 var UserInstructions = require('./userinstructions.jsx');
 
 
-var IO = require('./../thirdparty/socket/socket.io.js');
-var socket = io();
+var io = require('./../thirdparty/socket/socket.io.js');
+
 
 //for reset button
 var VTIconStore = require('./stores/vticonstore.js');
@@ -23,6 +23,19 @@ var VTIconStore = require('./stores/vticonstore.js');
 
 var EditorHeader = React.createClass({
 
+	getInitialState: function(){
+		return{
+			socket:{}
+		}
+	},
+	emit: function(st,msg) {
+		this.state.socket.emit(st,msg)
+	},
+	componentDidMount: function() {
+		var socket = io.connect("http://localhost:3000");
+		this.setState({socket:socket});
+
+	},
 	mixins : [
 				Reflux.connect(AnimationStore.store, 'animation'), //emitted updates go to 'animation' key
 				Reflux.connect(StudyStore.store, 'study'), //emitted updates go to 'study' key
@@ -79,22 +92,22 @@ var EditorHeader = React.createClass({
 	},
 
 	_onTestClick : function(e) {
-		socket.emit('test');
+		this.emit('test');
 	},
 
 	_onRenderClick : function(e) {
-		socket.emit('render');
+		this.emit('render');
 	},
 
 	_onStopClick : function(e) {
-		socket.emit('stop_render');
+		this.emit('stop_render');
 	},
 
 	_onResetClick : function(e) {
 		VTIconStore.actions.reset();
 	},
 	_onGetSetPointsClick : function(e) {
-		socket.emit('get_setPoints');
+		this.emit('get_setPoints');
 	},
 
 	/**
@@ -208,7 +221,7 @@ var EditorHeader = React.createClass({
 		if (this.props.displayGetSetPointsButton)
 		{
 			getSetPointsButton = (<button onClick={this._onGetSetPointsClick}>Get set points</button>);
-		}
+		}	
 
 		return (
 			// <div className="header" style={headerStyle}>

@@ -9,8 +9,23 @@ var WaveformPathMixin = require('./util/waveformpathmixin.js');
 var VTIconStore = require('./stores/vticonstore.js');
 var DragStore = require('./stores/dragstore.js');
 
-var IconVis = React.createClass({
+var io = require('socket.io-client/socket.io')
 
+var IconVis = React.createClass({
+	getInitialState: function(){
+		return{
+			socket:{}
+		}
+	},
+
+	componentDidMount: function(){
+		
+		var socket = io.connect("http://localhost:3000");
+		this.setState({socket:socket});
+	},
+	emit: function(st,msg) {
+		this.state.socket.emit(st,msg)
+	},
 	mixins : [
 		TimelineMixin("divWrapper"),
 		WaveformPathMixin,
@@ -53,8 +68,8 @@ var IconVis = React.createClass({
 			this.props.resolution, this.props.maxFrequencyRendered, this.props.limitFrequencies);
 		console.log('changing vticon');
 		if (this.props.logValues) {
-			var socket = io();
-			socket.emit('path',{range:this.props.height,path:this._visPath,name:this.props.name});
+			
+			this.emit('path',{range:this.props.height,path:this._visPath,name:this.props.name});
 
 		}
 

@@ -8,6 +8,7 @@ var fs = require('fs');
 var path = require('path');
 var csv = require ('fast-csv')
 var pitchFinder = require('pitchfinder');
+var server = require('http').Server(app);
 
 //------------------------------------------------------------------------------
 // Globals
@@ -24,22 +25,33 @@ var smoothOut =0;
 //------------------------------------------------------------------------------
 
 
+server.listen(3000);
 
-app.use("/css", express.static(__dirname + '/css'));
-app.use("/build", express.static(__dirname + '/build'));
-app.use("/dist", express.static(__dirname + '/dist'));
+    // app.use(express.static(__dirname + '/dist'));
+
+    // app.get('/', function (req, res) {
+    //   res.sendfile(__dirname + '/index.html');
+    // });
+
+    app.use(express.static(__dirname + '/css'));
+
+
+// app.use("/css", express.static(__dirname + '/css'));
+// //app.use("/build", express.static(__dirname + '/build'));
+// app.use("/dist", express.static(__dirname + '/dist'));
 app.use("/thirdparty", express.static(__dirname + '/thirdparty'));
 app.use("/recordings", express.static(__dirname+'/recordings'));
 
-app.get('/', function (req, res) {
-  res.sendFile(__dirname + '/build/index.html'); //was res.sendfile(__dirname + '/build/index.html');
-});
-var server = app.listen(8080, function () {
+// app.get('/', function (req, res) {
+//   res.sendFile(__dirname + '/index.html'); //was res.sendfile(__dirname + '/build/index.html');
+// });
+
+// var server = app.listen(3000, function () {
   var host = server.address().address;
   var port = server.address().port;
 
   console.log('Example app listening at http://%s:%s', host, port);
-});
+
 
 //------------------------------------------------------------------------------
 // Socket setup
