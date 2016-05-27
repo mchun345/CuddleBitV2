@@ -84,8 +84,12 @@ var vticonStore = Reflux.createStore({
 								valueScale:[0.10,0.90], //normalized
 								data : [
 									{ id: 4, t: 1500, value:0.5, selected:false}]
-							}
-
+							},
+							position : {
+								valueScale:[0,1], //normalized
+								data : [
+									{ id: 4, t: 1500, value:0.5, selected:false}]
+							},
 						}
 					},
 
@@ -130,13 +134,18 @@ var vticonStore = Reflux.createStore({
 								valueScale:[0.10,0.90], //normalized
 								data : [
 									{ id: 12, t: 1500, value:0.5, selected:false}]
-
 									
-							}
+							},
+							position : {
+								valueScale:[0,1], //normalized
+								data : [
+									{ id: 4, t: 1500, value:0.5, selected:false}]
+							},
 						}
 					}
 						
 					};
+
 
 		this._previousStates = []; //for undo
 		this._nextStates = []; //for redo
@@ -242,6 +251,7 @@ var vticonStore = Reflux.createStore({
 
 	onNewMultipleKeyframes(parameter_keyframe_map, overwrite=true, name="")
 	{
+		console.log("onNewMultipleKeyframes", parameter_keyframe_map)
 		this._saveStateForUndo();
 		name = this._selectVTIcon(name);
 		var leftover_ids_to_delete = [];
@@ -772,7 +782,12 @@ var vticonStore = Reflux.createStore({
 								valueScale:[0.10,0.90], //normalized
 								data : [
 									{ id: 4, t: 1500, value:0.5, selected:false}]
-							}
+							},
+							position : {
+								valueScale:[0,1], //normalized
+								data : [
+									{ id: 4, t: 1500, value:0.5, selected:false}]
+							},
 
 						}
 					},
@@ -818,9 +833,12 @@ var vticonStore = Reflux.createStore({
 								valueScale:[0.10,0.90], //normalized
 								data : [
 									{ id: 12, t: 1500, value:0.5, selected:false}]
-
-									
-							}
+							},
+							position : {
+								valueScale:[0,1], //normalized
+								data : [
+									{ id: 4, t: 1500, value:0.5, selected:false}]
+							},
 						}
 					}
 						

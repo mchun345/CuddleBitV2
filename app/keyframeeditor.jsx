@@ -14,9 +14,6 @@ var KeyframeEditor = React.createClass({
 		TimelineMixin("divWrapper"),
 		Reflux.connect(ScaleStore.store, 'scales') //emitted updates go to 'scales' key			
 		],
-
-
-
 	propTypes: {
 		name : React.PropTypes.string.isRequired,
 		parameter : React.PropTypes.string.isRequired,
@@ -65,7 +62,6 @@ var KeyframeEditor = React.createClass({
 
 
 	render : function() {
-
 
 		var keyframeCircleRadius = this.props.keyframeCircleRadius;
 		var circleColor = this.props.circleColor;

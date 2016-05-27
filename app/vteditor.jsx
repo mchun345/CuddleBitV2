@@ -1,4 +1,3 @@
-
 import React from 'react';
 import Reflux from 'reflux';
 import d3 from 'd3';
