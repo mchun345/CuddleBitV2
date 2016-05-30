@@ -9,13 +9,51 @@ var WaveformPathMixin = require('./util/waveformpathmixin.js');
 var VTIconStore = require('./stores/vticonstore.js');
 var DragStore = require('./stores/dragstore.js');
 
-var IconVis = React.createClass({
+var io = require('socket.io-client/socket.io')
 
+var IconVis = React.createClass({
+	getInitialState: function(){
+		return{
+			socket:{}
+		}
+	},
+	loadPosition : function(setPoints) {
+		// still a stub
+		var points = setPoints.map(function(p,i){
+			var obj = {
+				selected : false,
+				t: i * 34,
+				value: p 
+			}
+			return obj;
+		});
+
+		var parameter_keyframe_map = {
+			position: points,
+		};
+
+		VTIconStore.actions.newMultipleKeyframes(parameter_keyframe_map);
+		console.log("loaded position");
+		
+	},
+	componentDidMount: function(){
+		var socket = io.connect("http://localhost:3000");
+		socket.on("process_buffer_done",function(){
+			socket.emit("get_setPoints")
+		})
+		socket.on("send_setPoints",function(msg){
+			this.loadPosition(msg);
+		}.bind(this))
+		this.setState({socket:socket});
+	},
+	emit: function(st,msg) {
+		this.state.socket.emit(st,msg)
+	},
 	mixins : [
 		TimelineMixin("divWrapper"),
 		WaveformPathMixin,
-		Reflux.listenTo(VTIconStore.store,"onVTIconChange")],
-
+		Reflux.listenTo(VTIconStore.store,"onVTIconChange")
+	],
 	propTypes: {
 		vticon : React.PropTypes.object.isRequired,
 		currentTime: React.PropTypes.number.isRequired,
@@ -23,8 +61,8 @@ var IconVis = React.createClass({
 		playheadFill: React.PropTypes.string.isRequired,
 		interpolateParameters: React.PropTypes.func.isRequired,
 		name : React.PropTypes.string.isRequired,
-		selection : React.PropTypes.object.isRequired			},
-
+		selection : React.PropTypes.object.isRequired
+	},
 	getDefaultProps: function() {
 	    return {
 	      height: 50, //was 25
@@ -45,21 +83,30 @@ var IconVis = React.createClass({
 	 	var scaleY = d3.scale.linear()
                     .domain( [-1, 1]) // return value from sine
                     .range([0, this.props.height]);
-
         var scaleX = this.props.scaleX;
-
-		this._visPath = this.computeWaveformPath(this.props.vticon,
-			scaleX, scaleY,
-			this.props.resolution, this.props.maxFrequencyRendered, this.props.limitFrequencies);
-		console.log('changing vticon');
+        this._visPath = this.computePositionPath(
+							this.props.vticon,
+							scaleX, 
+							scaleY,
+							this.props.resolution
+        )
+		// this._visPath = this.computeWaveformPath(
+		// 							this.props.vticon,
+		// 							scaleX, 
+		// 							scaleY,
+		// 							this.props.resolution, 
+		// 							this.props.maxFrequencyRendered, 
+		// 							this.props.limitFrequencies
+		// );
 		if (this.props.logValues) {
-			var socket = io();
-			socket.emit('path',{range:this.props.height,path:this._visPath,name:this.props.name});
-
+			var the_path = {
+				range:this.props.height,
+				path:this._visPath,
+				name:this.props.name
+			}
+			this.emit('path', the_path);
 		}
-
 	},
-
 	onMouseDown: function(e) {
 		VTIconStore.actions.selectVTIcon(this.props.name);
 		if(this.props.selectable) {
@@ -68,8 +115,6 @@ var IconVis = React.createClass({
 	},
 
 	render : function() {
-
-
 		var divStyle = {
 			height:this.props.height,
 			width:this.props.width,

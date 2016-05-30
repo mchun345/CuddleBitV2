@@ -1,6 +1,7 @@
 body {
     margin:0;
-    font-family:"Helvetica Nueue", sans-serif;
+    font-family:"Comic Sans", sans-serif;
+    font-style: bold;
 }
 
 * {
@@ -68,14 +69,17 @@ a:active {
    /* Permalink - use to edit and share this gradient: http://colorzilla.com/gradient-editor/#ffc170+0,ffcc8e+100 */
     background: #ffc170; /* Old browsers */
     background: -moz-linear-gradient(top,  #ffc170 0%, #ffcc8e 100%); /* FF3.6+ */
-    background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#ffc170), color-stop(100%,#ffcc8e)); /* Chrome,Safari4+ */
-    background: -webkit-linear-gradient(top,  #ffc170 0%,#ffcc8e 100%); /* Chrome10+,Safari5.1+ */
+    background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#fff), color-stop(100%,#fff)); /* Chrome,Safari4+ */
+    background: -webkit-linear-gradient(top,  #fff 0%,#fff 100%); /* Chrome10+,Safari5.1+ #ffcc8e */
     background: -o-linear-gradient(top,  #ffc170 0%,#ffcc8e 100%); /* Opera 11.10+ */
     background: -ms-linear-gradient(top,  #ffc170 0%,#ffcc8e 100%); /* IE10+ */
-    background: linear-gradient(to bottom,  #ffc170 0%,#ffcc8e 100%); /* W3C */
+    background: linear-gradient(to bottom,  #fff 0%,#fff 100%); /* W3C */
     filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ffc170', endColorstr='#ffcc8e',GradientType=0 ); /* IE6-9 */
 
+}
 
+#keyframeContainer {
+    background-color: #0f0;
 }
 
 .header .menu {

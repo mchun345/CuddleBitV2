@@ -1,6 +1,9 @@
 import React from 'react';
 import d3 from 'd3';
 
+var Parameters = require('../classes/parameters.js')
+var params = new Parameters()
+
 var WaveformPathMixin = {
 
 	_iconChanged : function (vticon) {
@@ -160,9 +163,8 @@ var WaveformPathMixin = {
 	 	return state;
 
 	},
-
-
-	computeWaveformPath(vticon, scaleX, scaleY, resolution, maxFrequencyRendered, limitFrequencies) {
+	// PB add --------------------------------------------------------------------------------
+	computePositionPath(vticon, scaleX, scaleY, resolution) {
 		if (this._iconChanged(vticon))
 		{
 
@@ -174,59 +176,24 @@ var WaveformPathMixin = {
 									return scaleY(d[1])
 								});
 
-			limitFrequencies = false;
-
 			//do icon visualization
 			var visPoints = [];
-			var lastFrequency = 0;
 			var dt_in_s = vticon.duration/1000/resolution;
-			var phaseIntegral = 0;
-			var phaseIntegralTexture = 0;
-			var frequencyScaleFactor = Math.max(vticon.parameters.frequency.valueScale[0], vticon.parameters.frequency.valueScale[1])/maxFrequencyRendered;
+
 			for (var i = 0; i < resolution; i++) {
 				var t_in_ms = i/resolution*vticon.duration;
 				var t_in_s = t_in_ms/1000;
 
-				var amplitude = this.interpolateParameter("amplitude", t_in_ms, vticon);//paramValues.amplitude;
-				var frequency = this.interpolateParameter("frequency", t_in_ms, vticon); //paramValues.frequency;
-				var ampTex = 0;
-				if ("ampTex" in vticon.parameters)
-				{
-					ampTex = this.interpolateParameter("ampTex", t_in_ms, vticon); //paramValues.bias;	
-				}
-				var freqTex = 10;
-				if ("freqTex" in vticon.parameters)
-				{
-					freqTex = this.interpolateParameter("freqTex", t_in_ms, vticon); //paramValues.bias;	
-				}
-				var bias = 0.5;
-				if ("bias" in vticon.parameters)
-				{
-					bias = this.interpolateParameter("bias", t_in_ms, vticon); //paramValues.bias;	
-				}
-
-				if (limitFrequencies) {
-					frequency = Math.min(maxFrequencyRendered, frequency/frequencyScaleFactor);
-				}
-				//console.log("Frequency for ", i, " at time", t_in_ms, "is", frequency);
-				//var frequency = interpolateParameter("frequency", t_in_ms);
-
-				if (i == 0) {
-					// phaseIntegral = frequency;
-				} else { 
-					// console.log(phaseIntegral);
-					var biasedFrequency = frequency/bias;
-					if ( phaseIntegral-Math.floor(phaseIntegral) > 0.25
-						&& phaseIntegral-Math.floor(phaseIntegral) <= 0.75) 
-					{
-						biasedFrequency = frequency/(1-bias);
+				var output = 0;
+				params.getParameterKeyArray().forEach(function(paramName){
+					if (paramName in vticon.parameters) {
+						var interpolatedKeyframeValue = this.interpolateParameter(paramName, t_in_ms, vticon)
+						var fn = params.getParameters()[paramName].fun
+						output = params.getParameters()[paramName].fun(output,interpolatedKeyframeValue)
 					}
-					phaseIntegral += biasedFrequency*dt_in_s;
-					phaseIntegralTexture += freqTex*dt_in_s
-				};
-				var v = amplitude * Math.sin(2*Math.PI*phaseIntegral) + ampTex*Math.sin(2*Math.PI*phaseIntegralTexture);
-				visPoints.push ( [t_in_ms, v]);
-				lastFrequency = frequency;
+
+				}.bind(this))
+				visPoints.push ( [t_in_ms, output]);
 			}
 
 			this._last_updated_vticon = this._copyIcon(vticon);
@@ -234,7 +201,90 @@ var WaveformPathMixin = {
 		}
 
 		return this._waveformpath;
-	}
+	},
+
+
+	// end PB add ----------------------------------------------------------------------------
+
+
+	// computeWaveformPath(vticon, scaleX, scaleY, resolution, maxFrequencyRendered, limitFrequencies) {
+	// 	if (this._iconChanged(vticon))
+	// 	{
+
+	// 		var vticonline = d3.svg.line()
+	// 							.x(function(d) {
+	// 								return scaleX(d[0])
+	// 							})
+	// 							.y(function(d) {
+	// 								return scaleY(d[1])
+	// 							});
+
+	// 		limitFrequencies = false;
+
+	// 		//do icon visualization
+	// 		var visPoints = [];
+	// 		var lastFrequency = 0;
+	// 		var dt_in_s = vticon.duration/1000/resolution;
+	// 		var phaseIntegral = 0;
+	// 		var phaseIntegralTexture = 0;
+	// 		var frequencyScaleFactor = Math.max(vticon.parameters.frequency.valueScale[0], vticon.parameters.frequency.valueScale[1])/maxFrequencyRendered;
+	// 		for (var i = 0; i < resolution; i++) {
+	// 			var t_in_ms = i/resolution*vticon.duration;
+	// 			var t_in_s = t_in_ms/1000;
+
+	// 			var amplitude = this.interpolateParameter("amplitude", t_in_ms, vticon);//paramValues.amplitude;
+	// 			var frequency = this.interpolateParameter("frequency", t_in_ms, vticon); //paramValues.frequency;
+	// 			var ampTex = 0;
+	// 			if ("ampTex" in vticon.parameters)
+	// 			{
+	// 				ampTex = this.interpolateParameter("ampTex", t_in_ms, vticon); //paramValues.bias;	
+	// 			}
+	// 			var freqTex = 10;
+	// 			if ("freqTex" in vticon.parameters)
+	// 			{
+	// 				freqTex = this.interpolateParameter("freqTex", t_in_ms, vticon); //paramValues.bias;	
+	// 			}
+	// 			var bias = 0.5;
+	// 			if ("bias" in vticon.parameters)
+	// 			{
+	// 				bias = this.interpolateParameter("bias", t_in_ms, vticon); //paramValues.bias;	
+	// 			}
+	// 			var position = 0.5;
+	// 			if ("position" in vticon.parameters)
+	// 			{
+	// 				position = this.interpolateParameter("position", t_in_ms, vticon); //paramValues.bias;	
+	// 			}
+
+	// 			if (limitFrequencies) {
+	// 				frequency = Math.min(maxFrequencyRendered, frequency/frequencyScaleFactor);
+	// 			}
+	// 			//console.log("Frequency for ", i, " at time", t_in_ms, "is", frequency);
+	// 			//var frequency = interpolateParameter("frequency", t_in_ms);
+
+	// 			if (i == 0) {
+	// 				// phaseIntegral = frequency;
+	// 			} else { 
+	// 				// console.log(phaseIntegral);
+	// 				var biasedFrequency = frequency/bias;
+	// 				if ( phaseIntegral-Math.floor(phaseIntegral) > 0.25
+	// 					&& phaseIntegral-Math.floor(phaseIntegral) <= 0.75) 
+	// 				{
+	// 					biasedFrequency = frequency/(1-bias);
+	// 				}
+	// 				phaseIntegral += biasedFrequency*dt_in_s;
+	// 				phaseIntegralTexture += freqTex*dt_in_s
+	// 			};
+	// 			var v = amplitude * Math.sin(2*Math.PI*phaseIntegral) + ampTex*Math.sin(2*Math.PI*phaseIntegralTexture);
+	// 			visPoints.push ( [t_in_ms, v]);
+	// 			lastFrequency = frequency;
+	// 		}
+
+	// 		this._last_updated_vticon = this._copyIcon(vticon);
+	// 		this._waveformpath =  vticonline(visPoints);
+	// 	}
+
+	// 	return this._waveformpath;
+	// }
 
 
 

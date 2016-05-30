@@ -1,4 +1,3 @@
-
 import React from 'react';
 import Reflux from 'reflux';
 import d3 from 'd3';
@@ -263,14 +262,14 @@ var VTEditor = React.createClass({
 	render : function() {
 
 		// TODO: sound of SELECTED icon
-		var frequency = this.interpolateParameter('frequency', this.state.playback.currentTime, this.state.playback.playingIcon);
-		var amplitude = this.interpolateParameter('amplitude', this.state.playback.currentTime, this.state.playback.playingIcon);
+		// var frequency = this.interpolateParameter('frequency', this.state.playback.currentTime, this.state.playback.playingIcon);
+		// var amplitude = this.interpolateParameter('amplitude', this.state.playback.currentTime, this.state.playback.playingIcon);
 
-		var amplitude_for_soundgen = 0;
-		if (this.props.playbackAtEndOfVTIcon)
-		{
-			amplitude_for_soundgen = amplitude;
-		}
+		// var amplitude_for_soundgen = 0;
+		// if (this.props.playbackAtEndOfVTIcon)
+		// {
+			// amplitude_for_soundgen = amplitude;
+		// }
 
 		var scaleXMain = this.state.scales.main.scaleTimeline;
 		var scaleXExample = this.state.scales.example.scaleTimeline;
@@ -305,7 +304,7 @@ var VTEditor = React.createClass({
 			exampleStyle.borderColor="white";
 			if (this.state.playback.currentTime < this.state.vticons.main.duration)
 			{
-				amplitude_for_soundgen = amplitude;
+				// amplitude_for_soundgen = amplitude;
 			}
 
 		} else {
@@ -313,7 +312,7 @@ var VTEditor = React.createClass({
 			exampleStyle.borderColor="black";
 			if (this.state.playback.currentTime < this.state.vticons.example.duration)
 			{
-				amplitude_for_soundgen = amplitude;
+				// amplitude_for_soundgen = amplitude;
 			}
 		}
 
@@ -372,8 +371,6 @@ var VTEditor = React.createClass({
 		return (
 			<div id="app" ref="appRef">
 				<EditorHeader />
-				<SoundGen frequency={frequency} amplitude={amplitude_for_soundgen} mute={this.state.playback.mute} />
-				
 
 				<div name="main" id="maineditor" ref="mainEditorRef" style={designStyle}>
 					<ControlBar
