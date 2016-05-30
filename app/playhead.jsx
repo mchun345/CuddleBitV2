@@ -17,7 +17,7 @@ var PlayHead = React.createClass({
 		currentTime: React.PropTypes.number.isRequired,
 		playheadFill: React.PropTypes.string.isRequired,
 		displayPlayhead: React.PropTypes.bool.isRequired
-			},
+	},
 	
 	getDefaultProps: function() {
 	    return {
@@ -25,7 +25,7 @@ var PlayHead = React.createClass({
 	      width:'100%',
 	      playheadWidth: 20,
 	      background:'#EEEEEE',
-	      axisTickLength:7
+	      axisTickLength:7,
 	    }
 	},
 
