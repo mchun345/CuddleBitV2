@@ -17,6 +17,12 @@ var sineExample = function(frequency, duration, dt) {
           };
 
   rv.parameters = {
+        position : {
+            valueScale:[0,1], //normalized
+            data : [
+             { id: 4, t: 1500, value:0.5, selected:false},
+            ]
+        },
         amplitude: {
           valueScale:[0,1], //normalized
           data : []
@@ -50,11 +56,7 @@ var sineExample = function(frequency, duration, dt) {
             data : [
              { id: 4, t: 1500, value:0.5, selected:false}]
         },
-        position : {
-            valueScale:[0,1], //normalized
-            data : [
-             { id: 4, t: 1500, value:0.5, selected:false}]
-        },
+        
       };
 
   for (var t = 0; t < duration; t+=dt)
