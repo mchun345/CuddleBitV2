@@ -39,7 +39,8 @@ var scaleStore = Reflux.createStore({
 					frequency:stub_fn,
 					ampTex:stub_fn,
 					freqTex:stub_fn,
-					bias:stub_fn
+					bias:stub_fn,
+					position:stub_fn,
 				},
 				leftOffset:0,
 				topOffsetParameter:{
@@ -47,7 +48,8 @@ var scaleStore = Reflux.createStore({
 					frequency:0,
 					ampTex:0,
 					freqTex:0,
-					bias:0
+					bias:0,
+					position:0,
 				}			
 			};
 
