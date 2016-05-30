@@ -1,6 +1,8 @@
 import Reflux from 'reflux';
 
 var LogStore = require('./logstore.js');
+var Parameters = require('../classes/parameters.js');
+var params = new Parameters();
 
 var vticonActions = Reflux.createActions(
 	[
@@ -42,7 +44,9 @@ var vticonActions = Reflux.createActions(
 var vticonStore = Reflux.createStore({
 
 	listenables: [vticonActions],
-	default_params : { //left side editor
+	init : function() {
+		// console.log(ParameterStore.actions.getParameters())
+		this._defaultParams = { //left side editor
 						duration: 3000, //ms //was 3000
 
 						selected: true,
@@ -52,56 +56,17 @@ var vticonStore = Reflux.createStore({
 							time1:0,
 							time2:0
 						},
+						parameters: params.getParameters(),
+		};
 
-						parameters: {
-							amplitude: {
-								valueScale:[0,1], //normalized
-								data : [
-									{ id: 0, t: 1500, value:0.5, selected:false}]
-							},
-
-							frequency: {
-								valueScale:[50,500], //Hz
-								data : [
-									{ id: 1, t: 1500, value:300, selected:false}]
-							},
-							ampTex: {
-								valueScale:[0,1], //normalized
-								data : [
-									{ id: 2, t: 1500, value:0.5, selected:false}]
-							},
-							freqTex: {
-								valueScale:[10,50], //Hz
-								data : [
-									{ id: 3, t: 1500, value:25, selected:false}]
-							},
-
-							bias: {
-								valueScale:[0.10,0.90], //normalized
-								data : [
-									{ id: 4, t: 1500, value:0.5, selected:false}]
-							},
-							position : {
-								valueScale:[0,1], //normalized
-								data : [
-									{ id: 4, t: 1500, value:0.5, selected:false}]
-							},
-
-						}
-					},
-
-	init : function() {
 		this._data = {
-
-					main: deepCopy(this.default_params),
-					example: deepCopy(this.default_params),
-
-					};
+					main: deepCopy(this._defaultParams),
+					example: deepCopy(this._defaultParams),
+		};
 
 
 		this._previousStates = []; //for undo
 		this._nextStates = []; //for redo
-
 		this._kfuidCount = 0;
 		for (var n in this._data) {
 			for (var p in this._data[n].parameters) {
@@ -696,8 +661,8 @@ var vticonStore = Reflux.createStore({
 	 onReset() {
 	 	this._data = {
 
-					main: deepCopy(this.default_params),
-					example: deep(this.default_params),
+					main: deepCopy(this._defaultParams),
+					example: deep(this._defaultParams),
 						
 					};
 
