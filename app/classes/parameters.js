@@ -4,23 +4,23 @@ function Parameters() {
   // this.io = io;
   // this.baz = 'baz'; // default value
   this.parameters = {
-  							amplitude: {
-								valueScale:[0,1], //normalized
-								data : [
-									{ id: 0, t: 1500, value:0.5, selected:false}],
-								fun: function(out,paramvalue){
-									return out
-								},
-							},
+  					// 		amplitude: {
+							// 	valueScale:[0,1], //normalized
+							// 	data : [
+							// 		{ id: 0, t: 1500, value:0.5, selected:false}],
+							// 	fun: function(out,paramvalue){
+							// 		return out
+							// 	},
+							// },
 
-							frequency: {
-								valueScale:[50,500], //Hz
-								data : [
-									{ id: 1, t: 1500, value:300, selected:false}],
-								fun: function(out,paramvalue){
-									return out
-								},
-							},
+							// frequency: {
+							// 	valueScale:[50,500], //Hz
+							// 	data : [
+							// 		{ id: 1, t: 1500, value:300, selected:false}],
+							// 	fun: function(out,paramvalue){
+							// 		return out
+							// 	},
+							// },
 							
 							position : {
 								valueScale:[0,1], //normalized

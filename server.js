@@ -9,6 +9,7 @@ var path = require('path');
 var csv = require ('fast-csv')
 var pitchFinder = require('pitchfinder');
 var server = require('http').Server(app);
+var colors = require('colors');
 
 //------------------------------------------------------------------------------
 // Globals
@@ -50,7 +51,7 @@ app.use("/recordings", express.static(__dirname+'/recordings'));
   var host = server.address().address;
   var port = server.address().port;
 
-  console.log('Example app listening at http://%s:%s', host, port);
+  log('Example app listening at http://%s:%s', host, port);
 
 
 //------------------------------------------------------------------------------
@@ -72,18 +73,18 @@ importParameters("recordings/1464126410068_parameters.json")
 // Socket functions (connect to index.html)
 //------------------------------------------------------------------------------
 io.on('connection', function(socket){
-	console.log('User connected.');
+	log('User connected.');
 
 	//User disconnects
 	socket.on('disconnect', function(){
-		console.log('User disconnected.');
+		log('User disconnected.');
 	});
 
 	// Test servo motion
 	socket.on('test', function(){
         	io.emit('server_message', 'Started arduino sweep.');
         	myMotor.start(255);
-		console.log('Arduino test.');
+		log('Arduino test.');
 	});
 
     // Move to degree
@@ -91,7 +92,7 @@ io.on('connection', function(socket){
             var d = parseInt(degree);
         	io.emit('server_message', 'Moving to degree ' + degree + ".");
         	myMotor.start(255);
-		console.log('Moving to degree ' + degree + ".");
+		log('Moving to degree ' + degree + ".");
     });
 
     socket.on('stop_render', function() {
@@ -102,16 +103,16 @@ io.on('connection', function(socket){
         var path = msg['path'];
         var range = msg['range'];
         var name = msg['name']
-        console.log("Path received for " + name + ".");
+        log("Path received for " + name + ".");
         makepath(range,path,name);
     });
 
 	socket.on('render', function(){
-        console.log('Rendering...');
+        log('Rendering...');
         render();
 	});
     socket.on('get_setPoints', function(){
-        console.log('get_setPoints called!!!!')
+        log('get_setPoints called!!!!')
         io.emit('send_setPoints', orgSetPoints);
        });
 });
@@ -141,7 +142,7 @@ board.on("ready", function() {
         servo: myServo
 	});
 	io.emit('server_message','Ready to start board.');
-    	console.log('Sweep away, my captain.');
+    	log('Sweep away, my captain.');
 });
 
 function makepath(range,path,name) {
@@ -183,7 +184,7 @@ var timeouts = [];
 function render() {
     stop_render();
     if (rendered_path_main.length==0 || rendered_path_example.length == 0) {
-        console.log('No path to render yet...');
+        log('No path to render yet...');
     }
     else {
         for(var i=0;i<rendered_path_main.length;i++) {
@@ -193,19 +194,19 @@ function render() {
 }
 
 function stop_render() {
-    // console.log("Stopping render...");
+    // log("Stopping render...");
     myMotor.start(0)
     for (var i=0; i<timeouts.length; i++) {
         clearTimeout(timeouts[i]);
     }
-    console.log("Stopped render.");
+    log("Stopped render.");
 }
 function doSetTimeout(i) {
     var t = setTimeout(function(){
         myServo.to(rendered_path_main[i]);
         myMotor.start(rendered_path_example[i]);
-        console.log('Setting speed to ' + rendered_path_example[i]);
-        console.log('Rotating servo to ' + rendered_path_main[i]);
+        log('Setting speed to ' + rendered_path_example[i]);
+        log('Rotating servo to ' + rendered_path_main[i]);
     },5 * i);
     return t;
 }
@@ -259,8 +260,8 @@ function processBuffer( inputBuffer ) {
             
         
         // else {
-        //     console.log("failed!\n")
-        //     console.log("parameters readout:    ",
+        //     log("failed!\n")
+        //     log("parameters readout:    ",
         //                     parameters.sampleRate,
         //                     parameters.frameRate,
         //                     parameters.framesPerBuffer,
@@ -275,7 +276,7 @@ function processBuffer( inputBuffer ) {
        
         renderBuffer(buffer)
     }
-    console.log("emitted processed buffer at " + new Date())
+    log("emitted processed buffer")
     io.emit("process_buffer_done");
 }
 
@@ -334,3 +335,7 @@ function mapValue(value, minIn, maxIn, minOut, maxOut){
 }
 
 
+function log(x) {
+    var date = new Date().toLocaleTimeString() + "\t"
+    console.log(date.rainbow,x)
+}
