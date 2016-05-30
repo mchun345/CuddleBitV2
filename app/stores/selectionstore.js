@@ -44,8 +44,11 @@ var selectStore = Reflux.createStore({
 				bias: {
 					value1: 0,
 					value2: 0
+				},
+				position : {
+					value1: 0,
+					value2: 0
 				}
-
 			}
 
 		};
