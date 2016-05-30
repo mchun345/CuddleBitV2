@@ -1,6 +1,8 @@
 import Reflux from 'reflux';
 
 var LogStore = require('./logstore.js');
+var Parameters = require('../classes/parameters.js');
+var params = new Parameters();
 
 var vticonActions = Reflux.createActions(
 	[
@@ -42,11 +44,9 @@ var vticonActions = Reflux.createActions(
 var vticonStore = Reflux.createStore({
 
 	listenables: [vticonActions],
-
 	init : function() {
-		this._data = {
-
-					main: { //left side editor
+		// console.log(ParameterStore.actions.getParameters())
+		this._defaultParams = { //left side editor
 						duration: 3000, //ms //was 3000
 
 						selected: true,
@@ -56,91 +56,17 @@ var vticonStore = Reflux.createStore({
 							time1:0,
 							time2:0
 						},
+						parameters: params.getParameters(),
+		};
 
-						parameters: {
-							amplitude: {
-								valueScale:[0,1], //normalized
-								data : [
-									{ id: 0, t: 1500, value:0.5, selected:false}]
-							},
+		this._data = {
+					main: deepCopy(this._defaultParams),
+					example: deepCopy(this._defaultParams),
+		};
 
-							frequency: {
-								valueScale:[50,500], //Hz
-								data : [
-									{ id: 1, t: 1500, value:300, selected:false}]
-							},
-							ampTex: {
-								valueScale:[0,1], //normalized
-								data : [
-									{ id: 2, t: 1500, value:0.5, selected:false}]
-							},
-							freqTex: {
-								valueScale:[10,50], //Hz
-								data : [
-									{ id: 3, t: 1500, value:25, selected:false}]
-							},
-
-							bias: {
-								valueScale:[0.10,0.90], //normalized
-								data : [
-									{ id: 4, t: 1500, value:0.5, selected:false}]
-							}
-
-						}
-					},
-
-					example: { //right side editor
-						duration: 3000, //ms 
-
-						selected: true,  
-
-						selectedTimeRange: {
-							active:false, 
-							time1:0, 
-							time2:0 
-						},
-
-						parameters: {
-							amplitude: {
-								valueScale:[0,1], 
-								data : [
-									{ id: 6, t: 600, value:0.5, selected:false},  
-									{ id: 7, t: 1500, value:1, selected:false},   
-									{ id: 8, t: 3000, value:0, selected:false}]   
-							},
-
-							frequency: {
-								valueScale:[50,500], //Hz , was [50,500]
-								data : [
-									{ id: 9, t: 1500, value:1, selected:false}]
-							},
-
-							ampTex: {
-								valueScale:[0,1], //normalized
-								data : [
-									{ id: 2, t: 1500, value:0.5, selected:false}]
-							},
-							freqTex: {
-								valueScale:[10,50], //Hz
-								data : [
-									{ id: 3, t: 1500, value:25, selected:false}]
-							},
-
-							bias: {
-								valueScale:[0.10,0.90], //normalized
-								data : [
-									{ id: 12, t: 1500, value:0.5, selected:false}]
-
-									
-							}
-						}
-					}
-						
-					};
 
 		this._previousStates = []; //for undo
 		this._nextStates = []; //for redo
-
 		this._kfuidCount = 0;
 		for (var n in this._data) {
 			for (var p in this._data[n].parameters) {
@@ -242,6 +168,7 @@ var vticonStore = Reflux.createStore({
 
 	onNewMultipleKeyframes(parameter_keyframe_map, overwrite=true, name="")
 	{
+		console.log("onNewMultipleKeyframes", parameter_keyframe_map)
 		this._saveStateForUndo();
 		name = this._selectVTIcon(name);
 		var leftover_ids_to_delete = [];
@@ -734,95 +661,8 @@ var vticonStore = Reflux.createStore({
 	 onReset() {
 	 	this._data = {
 
-					main: { //left side editor
-						duration: 3000, //ms //was 3000
-
-						selected: true,
-
-						selectedTimeRange: {
-							active:false,
-							time1:0,
-							time2:0
-						},
-
-						parameters: {
-							amplitude: {
-								valueScale:[0,1], //normalized
-								data : [
-									{ id: 0, t: 1500, value:0.5, selected:false}]
-							},
-
-							frequency: {
-								valueScale:[50,500], //Hz
-								data : [
-									{ id: 1, t: 1500, value:300, selected:false}]
-							},
-							ampTex: {
-								valueScale:[0,1], //normalized
-								data : [
-									{ id: 2, t: 1500, value:0.5, selected:false}]
-							},
-							freqTex: {
-								valueScale:[10,50], //Hz
-								data : [
-									{ id: 3, t: 1500, value:25, selected:false}]
-							},
-
-							bias: {
-								valueScale:[0.10,0.90], //normalized
-								data : [
-									{ id: 4, t: 1500, value:0.5, selected:false}]
-							}
-
-						}
-					},
-
-					example: { //right side editor
-						duration: 3000, //ms 
-
-						selected: true,  
-
-						selectedTimeRange: {
-							active:false, 
-							time1:0, 
-							time2:0 
-						},
-
-						parameters: {
-							amplitude: {
-								valueScale:[0,1], 
-								data : [
-									{ id: 6, t: 600, value:0.5, selected:false},  
-									{ id: 7, t: 1500, value:1, selected:false},   
-									{ id: 8, t: 3000, value:0, selected:false}]   
-							},
-
-							frequency: {
-								valueScale:[50,500], //Hz , was [50,500]
-								data : [
-									{ id: 9, t: 1500, value:1, selected:false}]
-							},
-
-							ampTex: {
-								valueScale:[0,1], //normalized
-								data : [
-									{ id: 2, t: 1500, value:0.5, selected:false}]
-							},
-							freqTex: {
-								valueScale:[10,50], //Hz
-								data : [
-									{ id: 3, t: 1500, value:25, selected:false}]
-							},
-
-							bias: {
-								valueScale:[0.10,0.90], //normalized
-								data : [
-									{ id: 12, t: 1500, value:0.5, selected:false}]
-
-									
-							}
-						}
-					}
+					main: deepCopy(this._defaultParams),
+					example: deep(this._defaultParams),
 						
 					};
 
@@ -849,9 +689,22 @@ var vticonStore = Reflux.createStore({
 	});
 
 
-
+// recursive function to clone an object. If a non object parameter
+// is passed in, that parameter is returned and no recursion occurs.
+function deepCopy(obj) {
+    if (obj === null || typeof obj !== 'object') {
+        return obj;
+    }
+    var temp = obj.constructor(); // give temp the original obj's constructor
+    for (var key in obj) {
+        temp[key] = deepCopy(obj[key]);
+    }
+ 
+    return temp;
+}
 
 module.exports = {
 	actions:vticonActions,
 	store:vticonStore
 };
+

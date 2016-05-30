@@ -222,12 +222,6 @@ detectPitchAMDF = new pitchFinder.AMDF({
         maxFrequency:1200
     });
 
-
-
-
-
-
-
 var stream = fs.createReadStream("recordings/1464126410068_recording.csv");
 
 var audioBuffer = []
@@ -281,6 +275,8 @@ function processBuffer( inputBuffer ) {
        
         renderBuffer(buffer)
     }
+    console.log("emitted processed buffer at " + new Date())
+    io.emit("process_buffer_done");
 }
 
 
@@ -314,6 +310,7 @@ function renderBuffer(inputBuffer) {
         smoothOut = parameters.smoothValue * smoothOut + (1 - parameters.smoothValue) * ampPitchMix;
         
         orgSetPoints.push(smoothOut);
+
         
 }
 
