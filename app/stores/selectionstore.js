@@ -1,6 +1,7 @@
 import Reflux from 'reflux';
 var VTIconStore = require('./vticonstore.js');
-
+var Parameters = require('../classes/parameters.js');
+var params = new Parameters();
 
 var selectActions = Reflux.createActions([
 			'startSelecting',
@@ -17,40 +18,24 @@ var selectStore = Reflux.createStore({
 
 	listenables: [selectActions],
 
+
 	init() {
+		var parameters = {}
+		Object.keys(params.getParameters()).forEach(function(param){
+			var obj = {
+				value1: 0,
+				value2: 0,
+			}
+			parameters[param] = obj;
+		})
+
 		this._data = {
 			active:false,
 			adding:false,
 			targetName:"",
 			time1:0,
 			time2:0,
-			parameters: {
-				frequency: {
-					value1: 0,
-					value2: 0
-				},
-				amplitude: {
-					value1: 0,
-					value2: 0
-				}, //testing
-				ampTex: {
-					value1: 0,
-					value2: 0
-				},
-				freqTex: {
-					value1: 0,
-					value2: 0
-				},
-				bias: {
-					value1: 0,
-					value2: 0
-				},
-				position : {
-					value1: 0,
-					value2: 0
-				}
-			}
-
+			parameters: parameters,
 		};
 	},
 

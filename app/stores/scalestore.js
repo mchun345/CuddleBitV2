@@ -6,6 +6,9 @@ var VTIconStore = require('./vticonstore.js');
 //Testing to see if loading example store default will lead to different console output
 var ExampleStore = require('./examplestore.js');
 
+var Parameters = require('../classes/parameters.js');
+var params = new Parameters();
+
 var scaleActions = Reflux.createActions([
 			'setTimelineRange',
 			'setTrackrange',
@@ -32,25 +35,14 @@ var scaleStore = Reflux.createStore({
 
 		};
 		for (var i = 0; i < this._names.length; i++) {
+			var sp = params.initParamsWith(stub_fn);
+			var top = params.initParamsWith(0);
+
 			this._data[this._names[i]] = {
 				scaleTimeline:stub_fn,
-				scaleParameter:{
-					amplitude:stub_fn,
-					frequency:stub_fn,
-					ampTex:stub_fn,
-					freqTex:stub_fn,
-					bias:stub_fn,
-					position:stub_fn,
-				},
+				scaleParameter:sp,
 				leftOffset:0,
-				topOffsetParameter:{
-					amplitude:0,
-					frequency:0,
-					ampTex:0,
-					freqTex:0,
-					bias:0,
-					position:0,
-				}			
+				topOffsetParameter:top,
 			};
 
 		this._parameterValues[this._names[i]] = {};
