@@ -35,7 +35,8 @@ var vticonActions = Reflux.createActions(
 		'redo',
 		'reset', 
 
-		'deleteSelectedKeyframes'
+		'deleteSelectedKeyframes',
+		'simplifyKeyframes'
 	]
 
 );
@@ -520,6 +521,46 @@ var vticonStore = Reflux.createStore({
 					selected:false
 				});
 			}
+		}
+
+		this.trigger(this._data);
+	},
+
+	onSimplifyKeyframes(name="") {
+		name = this._selectVTIcon(name);
+
+		LogStore.actions.log("VTICON_SIMPLIFYKEYFRAMES_"+name);
+
+		// var kfNotSelected = function(value) {
+		// 	return !value.selected;
+		// };
+
+		this._saveStateForUndo();
+
+		for (var p in this._data[name].parameters) {
+			// for(var i = 3; )
+			var out = []
+			var origdata = this._data[name].parameters[p].data
+			for(var i = 0; i < origdata.length; i++) {
+				if (i%2 == 0) {
+					out.push(origdata[i])
+				}
+			}
+			this._data[name].parameters[p].data = out;
+			// if (this._data[name].parameters[p].data.length == 0) {
+			// 	//can't have an empty keyframe track, create new keyframe
+			// 	var new_id = this._getNewKFUID(p);
+			// 	var new_t = this._data[name].duration/2;
+			// 	//assign a midway value
+			// 	var new_value = (this._data[name].parameters[p].valueScale[0] + this._data[name].parameters[p].valueScale[1])/2; 
+
+			// 	this._data[name].parameters[p].data.push({
+			// 		id:new_id,
+			// 		t:new_t,
+			// 		value:new_value,
+			// 		selected:false
+			// 	});
+			// }
 		}
 
 		this.trigger(this._data);
