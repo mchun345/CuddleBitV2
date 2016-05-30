@@ -33,7 +33,7 @@ server.listen(3000);
     //   res.sendfile(__dirname + '/index.html');
     // });
 
-    app.use(express.static(__dirname + '/css'));
+    // app.use(express.static(__dirname + '/css'));
 
 
 // app.use("/css", express.static(__dirname + '/css'));
