@@ -527,40 +527,50 @@ var vticonStore = Reflux.createStore({
 	},
 
 	onSimplifyKeyframes(name="") {
+		// right now scales between first and last selected point
+		// TODO add this to a in/outpoint framework
+		// var inpoint = 0;
+		// var outpoint = 100;
+
+		var kfNotSelected = function(value) {
+			return !value.selected;
+		};
+		var kfSelected = function(value) {
+			return value.selected;
+		};
+
+		var compare = function (a, b) {
+		  if (a.t < b.t) {
+		    return -1;
+		  }
+		  if (a.t > b.t) {
+		    return 1;
+		  }
+		  // a must be equal to b
+		  return 0;
+		}
+
+
 		name = this._selectVTIcon(name);
 
 		LogStore.actions.log("VTICON_SIMPLIFYKEYFRAMES_"+name);
-
-		// var kfNotSelected = function(value) {
-		// 	return !value.selected;
-		// };
 
 		this._saveStateForUndo();
 
 		for (var p in this._data[name].parameters) {
 			// for(var i = 3; )
+			var keep = this._data[name].parameters[p].data.filter(kfNotSelected);
+			var simplify = this._data[name].parameters[p].data.filter(kfSelected);
+			
 			var out = []
-			var origdata = this._data[name].parameters[p].data
-			for(var i = 0; i < origdata.length; i++) {
+			// var origdata = this._data[name].parameters[p].data
+			for(var i = 0; i < simplify.length; i++) {
 				if (i%2 == 0) {
-					out.push(origdata[i])
+					out.push(simplify[i])
 				}
 			}
-			this._data[name].parameters[p].data = out;
-			// if (this._data[name].parameters[p].data.length == 0) {
-			// 	//can't have an empty keyframe track, create new keyframe
-			// 	var new_id = this._getNewKFUID(p);
-			// 	var new_t = this._data[name].duration/2;
-			// 	//assign a midway value
-			// 	var new_value = (this._data[name].parameters[p].valueScale[0] + this._data[name].parameters[p].valueScale[1])/2; 
 
-			// 	this._data[name].parameters[p].data.push({
-			// 		id:new_id,
-			// 		t:new_t,
-			// 		value:new_value,
-			// 		selected:false
-			// 	});
-			// }
+			this._data[name].parameters[p].data = keep.concat(out).sort(compare);
 		}
 
 		this.trigger(this._data);
