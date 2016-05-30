@@ -88,9 +88,7 @@ var IconVis = React.createClass({
 							this.props.vticon,
 							scaleX, 
 							scaleY,
-							this.props.resolution, 
-							this.props.maxFrequencyRendered, 
-							this.props.limitFrequencies
+							this.props.resolution
         )
 		// this._visPath = this.computeWaveformPath(
 		// 							this.props.vticon,
