@@ -78,6 +78,10 @@ a:active {
 
 }
 
+#keyframeContainer {
+    background-color: #0f0;
+}
+
 .header .menu {
     float:right;
     text-align: right;

@@ -8,32 +8,34 @@ var params = new Parameters();
 var EXAMPLE_KEY = "example"; //TODO: More general?
 
 
-var sineExample = function(frequency, duration, dt) {
-  var rv = {};
-  rv.duration = duration;
-  rv.selected=false;
-  rv.selectedTimeRange={
-            active:false,
-            time1:0,
-            time2:0
-          };
+// var sineExample = function(frequency, duration, dt) {
+//   var rv = {};
+//   rv.duration = duration;
+//   rv.selected=false;
+//   rv.selectedTimeRange={
+//             active:false,
+//             time1:0,
+//             time2:0
+//           };
 
-  rv.parameters = params.getParameters()
+//   rv.parameters = params.getParameters()
 
-  for (var t = 0; t < duration; t+=dt)
-  {
-    rv.parameters.amplitude.data.push(
-      {
-        t:t,
-        value:Math.sin(2*Math.PI*frequency*t/1000 - Math.PI/2*frequency)/2.0+0.5
-      });
-  }
+//   for (var t = 0; t < duration; t+=dt)
+//   {
 
-  return rv;
-};
+//     rv.parameters.amplitude.data.push(
+//       {
+//         t:t,
+//         value:Math.sin(2*Math.PI*frequency*t/1000 - Math.PI/2*frequency)/2.0+0.5
+//       });
+//   }
+
+//   return rv;
+// };
 
 var examples = {
-  sineExample: sineExample(1, 3000, 25)
+  //sineExample: sineExample(1, 3000, 25)
+  paulsExample: params.getParameters()
 }
 
 var exampleActions = Reflux.createActions(

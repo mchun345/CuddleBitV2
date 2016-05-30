@@ -26,7 +26,7 @@ var KeyframeEditor = React.createClass({
 	
 	getDefaultProps: function() {
 	    return {
-	      height: 80, //was 190, works to shrink editor elements well
+	      height: 180, //was 190, works to shrink editor elements well
 	      width:"100%",
 	      circleColor:'#FF8400',
 	      selectedCircleColor:'#B05B00',
@@ -90,7 +90,7 @@ var KeyframeEditor = React.createClass({
 		var divStyle = {
 			height:this.props.height,
 			width:this.props.width,
-			background:this.props.background
+			background:this.props.backgroundColor
 		};
 
 
@@ -230,7 +230,8 @@ var KeyframeEditor = React.createClass({
 
 		return (
 				<div ref="divWrapper" style={divStyle}>
-					<svg  width="100%" height="100%" onMouseDown={this._onMouseDown} >
+					<svg  width="100%" height="100%" onMouseDown={this._onMouseDown}>
+
 						
 						{visPath}
 						{paramLabels}

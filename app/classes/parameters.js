@@ -7,34 +7,41 @@ function Parameters() {
   							amplitude: {
 								valueScale:[0,1], //normalized
 								data : [
-									{ id: 0, t: 1500, value:0.5, selected:false}]
+									{ id: 0, t: 1500, value:0.5, selected:false}],
+								fun: function(out,paramvalue){
+									return out
+								},
 							},
 
 							frequency: {
 								valueScale:[50,500], //Hz
 								data : [
-									{ id: 1, t: 1500, value:300, selected:false}]
+									{ id: 1, t: 1500, value:300, selected:false}],
+								fun: function(out,paramvalue){
+									return out
+								},
 							},
-							ampTex: {
-								valueScale:[0,1], //normalized
-								data : [
-									{ id: 2, t: 1500, value:0.5, selected:false}]
-							},
-							freqTex: {
-								valueScale:[10,50], //Hz
-								data : [
-									{ id: 3, t: 1500, value:25, selected:false}]
-							},
-
-							bias: {
-								valueScale:[0.10,0.90], //normalized
-								data : [
-									{ id: 4, t: 1500, value:0.5, selected:false}]
-							},
+							
 							position : {
 								valueScale:[0,1], //normalized
 								data : [
-									{ id: 4, t: 1500, value:0.5, selected:false}]
+									{ id: 4, t: 1500, value:0.5, selected:false}],
+								fun: function(out,paramvalue){
+									return paramvalue
+								}
+							},
+							maxValue : {
+								valueScale:[0,5],
+								data : [
+									{id:6,t:1500,value:2.5, selected:false}],
+								fun: function(out,paramvalue){
+									if (out > paramvalue){
+										return paramvalue
+									}
+									else{
+										return out
+									}
+								}
 							},
 				}
  

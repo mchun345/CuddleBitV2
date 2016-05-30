@@ -1,6 +1,9 @@
 import React from 'react';
 import d3 from 'd3';
 
+var Parameters = require('../classes/parameters.js')
+var params = new Parameters()
+
 var WaveformPathMixin = {
 
 	_iconChanged : function (vticon) {
@@ -231,15 +234,26 @@ var WaveformPathMixin = {
 					// phaseIntegralTexture += freqTex*dt_in_s
 				// };
 
+				var output = 0;
+				params.getParameterKeyArray().forEach(function(paramName){
+					if (paramName in vticon.parameters)
+					{
+					
+					var interpolatedKeyframeValue = this.interpolateParameter(paramName, t_in_ms, vticon)
+					output = params.getParameters()[paramName].fun(output,interpolatedKeyframeValue)
+					}
+
+				}.bind(this))
+
+				// var position = 0.5;
 				
 
-				var position = 0.5;
-				if ("position" in vticon.parameters)
-				{
-					position = this.interpolateParameter("position", t_in_ms, vticon); //paramValues.position;
-				}
-				var v = position;
-				visPoints.push ( [t_in_ms, v]);
+				// if ("maxVal" in vticon.parameters)
+				// {
+				// 	var maxVal = this.interpolateParameter("maxVal", t_in_ms, vticon);
+				// 	position = maxVal.scalefun(position,)
+				// }			
+				visPoints.push ( [t_in_ms, output]);
 				// lastFrequency = frequency;
 			}
 
