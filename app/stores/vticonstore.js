@@ -36,7 +36,8 @@ var vticonActions = Reflux.createActions(
 		'reset', 
 
 		'deleteSelectedKeyframes',
-		'simplifyKeyframes'
+		'simplifyKeyframes',
+		'xScaleKeyframes'
 	]
 
 );
@@ -560,17 +561,71 @@ var vticonStore = Reflux.createStore({
 		for (var p in this._data[name].parameters) {
 			// for(var i = 3; )
 			var keep = this._data[name].parameters[p].data.filter(kfNotSelected);
-			var simplify = this._data[name].parameters[p].data.filter(kfSelected);
-			
-			var out = []
-			// var origdata = this._data[name].parameters[p].data
-			for(var i = 0; i < simplify.length; i++) {
-				if (i%2 == 0) {
-					out.push(simplify[i])
+			var simplify = this._data[name].parameters[p].data.filter(kfSelected).filter(function(e,i,arr){
+				if (i % 2 == 0) {
+					return true;
+				} else {
+					return false;
 				}
-			}
+			});
+			this._data[name].parameters[p].data = keep.concat(simplify).sort(compare);
+		}
 
-			this._data[name].parameters[p].data = keep.concat(out).sort(compare);
+		this.trigger(this._data);
+	},
+
+	onXScaleKeyframes(name="") {
+
+		var kfNotSelected = function(value) {
+			return !value.selected;
+		};
+		var kfSelected = function(value) {
+			return value.selected;
+		};
+
+		var compare = function (a, b) {
+		  if (a.t < b.t) {
+		    return -1;
+		  }
+		  if (a.t > b.t) {
+		    return 1;
+		  }
+		  // a must be equal to b
+		  return 0;
+		}
+
+		name = this._selectVTIcon(name);
+
+		LogStore.actions.log("VTICON_XSCALEKEYFRAMES_"+name);
+
+		this._saveStateForUndo();
+
+		for (var p in this._data[name].parameters) {
+			
+			var originalPoints = this._data[name].parameters[p].data.sort(compare)
+			
+			var middle = originalPoints.filter(kfSelected);
+
+			if (middle.length > 0) {
+				var start_i = originalPoints.indexOf(middle[0])
+				var end_i = originalPoints.indexOf(middle[middle.length - 1])
+				var end_t = middle[middle.length - 1].t
+
+				var start = originalPoints.slice(0,start_i);
+				var end = originalPoints.slice(end_i,originalPoints.length);
+
+				middle.forEach(function(m){
+					m.t = Math.floor(m.t * 1.1);
+				})
+
+				var delta = middle[middle.length - 1].t - end_t
+				
+				end.forEach(function(e){
+					e.t = e.t + delta
+				})
+
+				this._data[name].parameters[p].data = start.concat(end).concat(middle).sort(compare)
+			}
 		}
 
 		this.trigger(this._data);

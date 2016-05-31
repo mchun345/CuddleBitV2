@@ -245,6 +245,13 @@ var VTEditor = React.createClass({
    					// e.preventDefault();
    				}
    				break;
+			case 84: //t
+   				if (e.ctrlKey || e.metaKey) {
+   					// VTIconStore.actions.redo();
+   					VTIconStore.actions.xScaleKeyframes();
+   					// e.preventDefault();
+   				}
+   				break;
    			case 85: //u
    			case 90: //z
    				if(e.ctrlKey || e.metaKey) {
