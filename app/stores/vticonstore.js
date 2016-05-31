@@ -574,7 +574,7 @@ var vticonStore = Reflux.createStore({
 		this.trigger(this._data);
 	},
 
-	onXScaleKeyframes(name="") {
+	onXScaleKeyframes(scaleFactor,name="") {
 
 		var kfNotSelected = function(value) {
 			return !value.selected;
@@ -617,7 +617,7 @@ var vticonStore = Reflux.createStore({
 				var end = originalPoints.slice(end_i + 1,originalPoints.length);
 
 				middle.forEach(function(m,i,arr){
-					m.t = Math.floor(m.t + ((m.t - start_t) * 0.1));
+					m.t = Math.floor(m.t + ((m.t - start_t) * scaleFactor));
 				})
 
 				var end_pos = middle[middle.length - 1].t;

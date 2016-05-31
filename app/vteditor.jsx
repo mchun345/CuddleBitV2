@@ -164,7 +164,7 @@ var VTEditor = React.createClass({
    	},
 
    	_handleKeyboard : function(e) {
-
+   		// console.log(e.keyCode)
    		//use keyCode because it's supported by more browsers
    		//especially Safari, which has best performance so far
    		//look for deprecations in future versions
@@ -245,10 +245,17 @@ var VTEditor = React.createClass({
    					// e.preventDefault();
    				}
    				break;
-			case 84: //t
+			case 190: //<
    				if (e.ctrlKey || e.metaKey) {
    					// VTIconStore.actions.redo();
-   					VTIconStore.actions.xScaleKeyframes();
+   					VTIconStore.actions.xScaleKeyframes(0.1);
+   					// e.preventDefault();
+   				}
+   				break;
+   			case 188: //>
+   				if (e.ctrlKey || e.metaKey) {
+   					// VTIconStore.actions.redo();
+   					VTIconStore.actions.xScaleKeyframes(-0.1);
    					// e.preventDefault();
    				}
    				break;
