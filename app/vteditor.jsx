@@ -238,7 +238,7 @@ var VTEditor = React.createClass({
    					e.preventDefault();
    				}
    				break;
-   			case 83: //s
+   			case 191: // forward slash "/"
    				if (e.ctrlKey || e.metaKey) {
    					// VTIconStore.actions.redo();
    					VTIconStore.actions.simplifyKeyframes();
