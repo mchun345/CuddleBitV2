@@ -70,6 +70,7 @@ var PlayHead = React.createClass({
 								lineProps['x2'] = scaleX(tick);
 								lineProps['y1'] = 0;
 								lineProps['y2'] = 0 + axisTickLength;
+								
 								var line = React.DOM.line(lineProps);
 
 								//tick label
@@ -81,8 +82,16 @@ var PlayHead = React.createClass({
 								//hacky way of centering
 								labelProps['x'] = scaleX(tick)-2.5*tick.toString().length;
 								labelProps['y'] = axisTickLength+10;
-								var label = React.DOM.text(labelProps, tick);
 
+
+
+								var label = React.DOM.text(labelProps, tick);
+								// var label = tick
+								// var label = function() {
+								// 	return (
+								// 		<a >
+								// 	)
+								// }
 
 								return (<g key={idx}>
 											{line}

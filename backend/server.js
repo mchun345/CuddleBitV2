@@ -1,0 +1,281 @@
+//------------------------------------------------------------------------------
+// Requires
+//------------------------------------------------------------------------------
+var express = require('express');
+var app = express();
+var five = require("johnny-five");
+var fs = require('fs');
+var path = require('path');
+var csv = require ('fast-csv')
+var pitchFinder = require('pitchfinder');
+var server = require('http').Server(app);
+var colors = require('colors');
+var io = require('socket.io')(server);
+
+var functions = require('./functions.js')
+var MotorHandler = require('./motor.js')
+var motorh = new MotorHandler();
+
+//------------------------------------------------------------------------------
+// Globals
+//------------------------------------------------------------------------------
+var board, myServo;
+var rendered_path_main = [];
+var rendered_path_example = [];
+var parameters;
+var detectPitchAMDF;
+var orgSetPoints =[];
+var smoothOut =0;
+var timeouts = [];
+
+//----------------------------------------------------------------------------------
+// Functions
+//----------------------------------------------------------------------------------
+function makepath(range,path,name) {
+    var unscaled_points = [];
+    var scaled_points = [];
+    var scale_factor = 180
+    var offset = 0
+    var values = path.split(',');
+
+    if (name=="example") {
+        scale_factor = 255;
+        offset = 100
+    }
+
+    for (var i=10; i<values.length; i++) {
+        var value = parseFloat(values[i].split('L')[0]);
+        unscaled_points.push(value);
+    }
+
+    for (var i=0; i < unscaled_points.length; i++) {
+        var p =  Math.max(((unscaled_points[i] / range) * scale_factor) - offset,0);
+        scaled_points.push(p);
+    }
+    rendered_path(scaled_points,name);
+}
+
+function rendered_path(sp,name) {
+    if (name=="example") {
+        rendered_path_example = sp;
+    } else if (name=="main") {
+        rendered_path_main = sp;
+    }
+}
+function render() {
+    stop_render();
+    if (rendered_path_main.length==0 || rendered_path_example.length == 0) {
+        log('No path to render yet...');
+    }
+    else {
+        for(var i=0;i<rendered_path_main.length;i++) {
+            timeouts.push(doSetTimeout(i));
+        }
+    }
+}
+
+function stop_render() {
+    // log("Stopping render...");
+    myMotor.start(0)
+    for (var i=0; i<timeouts.length; i++) {
+        clearTimeout(timeouts[i]);
+    }
+    log("Stopped render.");
+}
+
+function doSetTimeout(i) {
+    var t = setTimeout(function(){
+        myServo.to(rendered_path_main[i]);
+        myMotor.start(rendered_path_example[i]);
+        log('Setting speed to ' + rendered_path_example[i]);
+        log('Rotating servo to ' + rendered_path_main[i]);
+    },5 * i);
+    return t;
+}
+
+function processBuffer( inputBuffer ) {
+    var stepSize = Math.floor(parameters.sampleRate/parameters.frameRate);
+    var buffer;
+    for (i=stepSize;i<inputBuffer.length;i+=stepSize){
+        j = (i-parameters.framesPerBuffer)
+        
+        buffer = inputBuffer.slice(j,i)
+            
+        if (buffer.length==0){
+           
+            break
+        }
+        renderBuffer(buffer)
+    }
+    log("emitted processed buffer")
+    io.emit("process_buffer_done");
+}
+
+function renderBuffer(inputBuffer) {
+        
+        var ampRaw = Math.abs(Math.max.apply(Math, inputBuffer));
+
+        //start of pitch analysis///////////////////////////////////////////        
+        var pitch = detectPitchAMDF(inputBuffer);
+        
+        if (pitch==null){
+            pitch = 0
+        }
+        else{
+            pitch = functions.mapValue(pitch, 0,1000,0,1)
+        }
+        //end of pitch analysis///////////////////////////////////////////
+        
+        //mixes amplitude and frequency, while scaling it up by scaleFactor.
+        var ampPitchMix = (parameters.gain_for_amp * ampRaw + parameters.gain_for_pitch * pitch) * parameters.scaleFactor;
+        
+        //smooths values
+        //Note: smoothValue is a number between 0-1
+        smoothOut = parameters.smoothValue * smoothOut + (1 - parameters.smoothValue) * ampPitchMix;
+        
+        orgSetPoints.push(smoothOut);
+        
+}
+
+function importParameters(paramatersFile){
+    var content = fs.readFileSync(paramatersFile)
+    var jsonContent = JSON.parse(content)
+    parameters = jsonContent;
+}
+
+function log(x) {
+    var date = new Date().toLocaleTimeString() + "\t"
+    console.log(date.rainbow,x)
+}
+
+
+//----------------------------------------------------------------------------------
+// Main
+//----------------------------------------------------------------------------------
+function main() {
+    
+    //------------------------------------------------------------------------------
+    // Server setup
+    //------------------------------------------------------------------------------
+    server.listen(3000);
+
+    app.use("/thirdparty", express.static(__dirname + '/thirdparty'));
+    app.use("/recordings", express.static(__dirname+'/recordings'));
+
+
+    var host = server.address().address;
+    var port = server.address().port;
+
+    log('Example app listening at http://%s:%s', host, port);
+
+    //------------------------------------------------------------------------------
+    // json poop
+    //------------------------------------------------------------------------------
+    importParameters("recordings/1464126410068_parameters.json")
+
+    ///////////////////////////////////////////////////////////
+    // Voodle code
+    ///////////////////////////////////////////////////////////
+
+    detectPitchAMDF = new pitchFinder.AMDF({
+            sampleRate:40000,
+            minFrequency:5,
+            maxFrequency:1200
+        });
+
+    var stream = fs.createReadStream("recordings/1464126410068_recording.csv");
+
+    var audioBuffer = []
+
+    var csvStream = csv()
+        .on("data", function(d){
+             audioBuffer.push(d[1])
+        })
+        .on("end", function(lines){
+            
+            processBuffer(audioBuffer);
+        });
+
+    stream.pipe(csvStream);
+
+    //------------------------------------------------------------------------------
+    // Socket setup
+    //------------------------------------------------------------------------------
+    io.on('connection', function(socket){
+        log('User connected.');
+
+        //User disconnects
+        socket.on('disconnect', function(){
+            log('User disconnected.');
+        });
+
+        // Test servo motion
+        socket.on('test', function(){
+                io.emit('server_message', 'Started arduino sweep.');
+                myMotor.start(255);
+            log('Arduino test.');
+        });
+
+        // Move to degree
+        socket.on('degree', function(degree){
+                var d = parseInt(degree);
+                io.emit('server_message', 'Moving to degree ' + degree + ".");
+                myMotor.start(255);
+            log('Moving to degree ' + degree + ".");
+        });
+
+        socket.on('stop_render', function() {
+            stop_render();
+        });
+
+        socket.on('path', function(msg){
+            var path = msg['path'];
+            var range = msg['range'];
+            var name = msg['name']
+            log("Path received for " + name + ".");
+            makepath(range,path,name);
+        });
+
+        socket.on('render', function(){
+            log('Rendering...');
+            render();
+        });
+        socket.on('get_setPoints', function(){
+            log('get_setPoints called!!!!')
+            io.emit('send_setPoints', orgSetPoints);
+           });
+    });
+
+    //------------------------------------------------------------------------------
+    // Board setup
+    //------------------------------------------------------------------------------
+    board = new five.Board();
+    var myMotor;
+    board.on("ready", function() {
+        var standby = new five.Pin(7);
+        standby.high()
+
+        myMotor = new five.Motor({
+            pins: {
+                pwm:3,
+                dir:9,
+                cdir:8
+            }
+        });
+
+        myServo = new five.Servo({
+            pin:10,
+            center:true,
+            range: [0,180]
+        });
+
+        board.repl.inject({
+            motor: myMotor,
+            servo: myServo
+        });
+        io.emit('server_message','Ready to start board.');
+            log('Sweep away, my captain.');
+    });
+}
+
+main()
