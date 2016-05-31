@@ -8,7 +8,7 @@ function Parameters() {
 							position : {
 								valueScale:[0,1], //normalized
 								data : [
-									{ id: 4, t: 1500, value:0.5, selected:false}],
+									{ id: 1, t: 1500, value:0.5, selected:false}],
 								fun: function(out,paramvalue){
 									return paramvalue
 								}
@@ -17,7 +17,7 @@ function Parameters() {
 							random : {
 								valueScale:[0,1],
 								data : [
-								{id:5,t:1500,value:0,selected:false}],
+								{id:2,t:1500,value:0,selected:false}],
 								fun: function(out,paramvalue){
 									return out+mapValue(Math.random(),0,1,0,paramvalue)
 								}
@@ -26,7 +26,7 @@ function Parameters() {
 							maxValue : {
 								valueScale:[0,1],
 								data : [
-									{id:6,t:1500,value:0.5, selected:false}],
+									{id:3,t:1500,value:1, selected:false}],
 								fun: function(out,paramvalue){
 									if (out > paramvalue){
 										return paramvalue
@@ -34,9 +34,21 @@ function Parameters() {
 									else{
 										return out
 									}
-							}
-							
-							
+								}
+							},
+
+							minValue : {
+								valueScale:[0,1],
+								data : [
+									{id:3,t:1500,value:0, selected:false}],
+								fun: function(out,paramvalue){
+									if (out < paramvalue){
+										return paramvalue
+									}
+									else{
+										return out
+									}
+								}
 							},
 				}
  
