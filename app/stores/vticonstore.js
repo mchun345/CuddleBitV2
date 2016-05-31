@@ -562,7 +562,7 @@ var vticonStore = Reflux.createStore({
 			// for(var i = 3; )
 			var keep = this._data[name].parameters[p].data.filter(kfNotSelected);
 			var simplify = this._data[name].parameters[p].data.filter(kfSelected).filter(function(e,i,arr){
-				if (i % 2 == 0) {
+				if (i % 2 == 0 || i == arr.length - 1) {
 					return true;
 				} else {
 					return false;
