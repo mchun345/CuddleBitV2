@@ -1,6 +1,11 @@
 # Macaron
 Vibrotactile Icon Editor
 
+## Changelog:
+
+2016.05.30 : added x-scale functionality with ctrl-< and ctrl->, where selected points are scaled, and the rest are translated.
+2016.05.30 : added a simplify functionality with ctrl-s, where points are decimated by half
+
 ##
 
 Quick install:
