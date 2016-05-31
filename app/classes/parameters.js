@@ -30,10 +30,20 @@ function Parameters() {
 									return paramvalue
 								}
 							},
-							maxValue : {
-								valueScale:[0,5],
+
+							random : {
+								valueScale:[0,1],
 								data : [
-									{id:6,t:1500,value:2.5, selected:false}],
+								{id:5,t:1500,value:0,selected:false}],
+								fun: function(out,paramvalue){
+									return out+mapValue(Math.random(),0,1,0,paramvalue)
+								}
+							},
+
+							maxValue : {
+								valueScale:[0,1],
+								data : [
+									{id:6,t:1500,value:0.5, selected:false}],
 								fun: function(out,paramvalue){
 									if (out > paramvalue){
 										return paramvalue
@@ -41,7 +51,9 @@ function Parameters() {
 									else{
 										return out
 									}
-								}
+							}
+							
+							
 							},
 				}
  
@@ -65,3 +77,14 @@ Parameters.prototype.initParamsWith = function(val) {
 
 // export the class
 module.exports = Parameters;
+
+
+function mapValue(value, minIn, maxIn, minOut, maxOut){
+    if (value>maxIn){
+        value = maxIn;
+    }
+    if (value<minIn){
+        value = minIn;
+    }
+    return (value / (maxIn - minIn) )*(maxOut - minOut);
+}
