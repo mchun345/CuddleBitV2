@@ -610,21 +610,30 @@ var vticonStore = Reflux.createStore({
 				var start_i = originalPoints.indexOf(middle[0])
 				var end_i = originalPoints.indexOf(middle[middle.length - 1])
 				var end_t = middle[middle.length - 1].t
+				var start_t = middle[0].t
+
 
 				var start = originalPoints.slice(0,start_i);
-				var end = originalPoints.slice(end_i,originalPoints.length);
+				var end = originalPoints.slice(end_i + 1,originalPoints.length);
 
-				middle.forEach(function(m){
-					m.t = Math.floor(m.t * 1.1);
+				middle.forEach(function(m,i,arr){
+					m.t = Math.floor(m.t + ((m.t - start_t) * 0.1));
 				})
 
-				var delta = middle[middle.length - 1].t - end_t
+				var end_pos = middle[middle.length - 1].t;
 				
 				end.forEach(function(e){
-					e.t = e.t + delta
+					e.t = (e.t - end_t) + end_pos
 				})
 
-				this._data[name].parameters[p].data = start.concat(end).concat(middle).sort(compare)
+				var ret = start.concat(end).concat(middle).sort(compare).filter(function(kf){
+					if (kf.t > this._defaultParams.duration) {
+						return false;
+					} else {
+						return true;
+					}
+				}.bind(this));
+				this._data[name].parameters[p].data = ret;
 			}
 		}
 
