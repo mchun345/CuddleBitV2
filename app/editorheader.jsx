@@ -96,6 +96,7 @@ var EditorHeader = React.createClass({
 	},
 
 	_onRenderClick : function(e) {
+		console.log("_onRenderClick called!!")
 		this.emit('render');
 	},
 

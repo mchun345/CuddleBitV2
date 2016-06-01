@@ -100,7 +100,7 @@ var IconVis = React.createClass({
 		// );
 		if (this.props.logValues) {
 			var the_path = {
-				range:this.props.height,
+				range:this.props.height/2,
 				path:this._visPath,
 				name:this.props.name
 			}

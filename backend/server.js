@@ -19,7 +19,7 @@ var motorh = new MotorHandler();
 //------------------------------------------------------------------------------
 // Globals
 //------------------------------------------------------------------------------
-var board, myServo;
+var board, myServo, myMotor;
 var rendered_path_main = [];
 var rendered_path_example = [];
 var parameters;
@@ -31,27 +31,28 @@ var timeouts = [];
 //----------------------------------------------------------------------------------
 // Functions
 //----------------------------------------------------------------------------------
-function makepath(range,path,name) {
+function makepath(frameheight,path,name) {
     var unscaled_points = [];
     var scaled_points = [];
-    var scale_factor = 180
-    var offset = 0
+    var scale_factor = parameters.servoMax-parameters.servoMin
+    var offset = parameters.servoMin
     var values = path.split(',');
+    log('frameheight: ',frameheight)
+
 
     if (name=="example") {
         scale_factor = 255;
         offset = 100
     }
 
-    for (var i=10; i<values.length; i++) {
-        var value = parseFloat(values[i].split('L')[0]);
-        unscaled_points.push(value);
+    for (var i=10; i<values.length; i++) { //TODO: was i=10 a typo? Should it be =0? Who kno
+        var v = parseFloat(values[i].split('L')[0]);
+       var value = mapValue(v,25,50,parameters.servoMin,parameters.servoMax);
+        scaled_points.push(value);
     }
 
-    for (var i=0; i < unscaled_points.length; i++) {
-        var p =  Math.max(((unscaled_points[i] / range) * scale_factor) - offset,0);
-        scaled_points.push(p);
-    }
+
+    // log("unscaled_points: ",getMaxOfArray(unscaled_points),getMinOfArray(unscaled_points))
     rendered_path(scaled_points,name);
 }
 
@@ -64,6 +65,7 @@ function rendered_path(sp,name) {
 }
 function render() {
     stop_render();
+    console.log('rendered path: ',getMaxOfArray(rendered_path_main),getMinOfArray(rendered_path_main))
     if (rendered_path_main.length==0 || rendered_path_example.length == 0) {
         log('No path to render yet...');
     }
@@ -75,7 +77,7 @@ function render() {
 }
 
 function stop_render() {
-    // log("Stopping render...");
+    log("Stopping render...");
     myMotor.start(0)
     for (var i=0; i<timeouts.length; i++) {
         clearTimeout(timeouts[i]);
@@ -84,11 +86,15 @@ function stop_render() {
 }
 
 function doSetTimeout(i) {
+    //log('set timeout called!')
     var t = setTimeout(function(){
         myServo.to(rendered_path_main[i]);
+        // random = Math.max((Math.random()*80),15)
+        // myServo.to(random);
+        //log('random val: ',random)
         myMotor.start(rendered_path_example[i]);
-        log('Setting speed to ' + rendered_path_example[i]);
-        log('Rotating servo to ' + rendered_path_main[i]);
+        //log('Setting speed to ' + rendered_path_example[i]);
+        //log('Rotating servo to ' + rendered_path_main[i]);
     },5 * i);
     return t;
 }
@@ -143,11 +149,25 @@ function importParameters(paramatersFile){
     parameters = jsonContent;
 }
 
-function log(x) {
+function log() {
+    var r = new Array(arguments)
     var date = new Date().toLocaleTimeString() + "\t"
-    console.log(date.rainbow,x)
+    console.log(date.rainbow,r)
 }
 
+
+function getMaxOfArray(numArray) {
+  return Math.max.apply(null, numArray);
+}
+
+function getMinOfArray(numArray) {
+  return Math.min.apply(null, numArray);
+}
+
+function mapValue(value, minIn, maxIn, minOut, maxOut){
+
+    return (value-minIn / (maxIn - minIn) )*(maxOut - minOut);
+}
 
 //----------------------------------------------------------------------------------
 // Main
@@ -230,13 +250,14 @@ function main() {
 
         socket.on('path', function(msg){
             var path = msg['path'];
-            var range = msg['range'];
+            var frameheight = msg['range'];
             var name = msg['name']
             log("Path received for " + name + ".");
-            makepath(range,path,name);
+            makepath(frameheight,path,name);
         });
 
         socket.on('render', function(){
+            console.log('socket render event!')
             log('Rendering...');
             render();
         });
@@ -250,8 +271,9 @@ function main() {
     // Board setup
     //------------------------------------------------------------------------------
     board = new five.Board();
-    var myMotor;
+    
     board.on("ready", function() {
+        log('board is ready!')
         var standby = new five.Pin(7);
         standby.high()
 
@@ -266,7 +288,7 @@ function main() {
         myServo = new five.Servo({
             pin:10,
             center:true,
-            range: [0,180]
+            range: [parameters.servoMin,parameters.servoMax] 
         });
 
         board.repl.inject({
@@ -277,5 +299,9 @@ function main() {
             log('Sweep away, my captain.');
     });
 }
+
+
+
+
 
 main()
