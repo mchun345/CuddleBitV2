@@ -173,7 +173,7 @@ var WaveformPathMixin = {
 									return scaleX(d[0])
 								})
 								.y(function(d) {
-									return scaleY(d[1])
+									return scaleY(1-d[1])
 								});
 
 			//do icon visualization

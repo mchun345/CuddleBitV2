@@ -83,6 +83,7 @@ var ControlBar = React.createClass({
 		return (
 			<div className="controlbar" style={divStyle}>
 				<div className="time-control" style={timeControlStyle}>
+					
 					 <a class="btn" href="#"><i onClick={this._onSkipBackwardClick} className="fa fa-step-backward" style={buttonStyle}></i></a>
 					 <a class="btn" href="#"><i onClick={this._onPlayClick} className={iconText} style={buttonStyle}></i></a>
 					 <a class="btn" href="#"><i onClick={this._onSkipForwardClick} className="fa fa-step-forward" style={buttonStyle}></i></a>
