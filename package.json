@@ -2,7 +2,7 @@
   "scripts": {
     "build": "webpack",
     "dev": "webpack-dev-server --devtool eval --progress --colors --hot --content-base build",
-    "deploy": "set NODE_ENV=production && webpack -p --config webpack.production.config.js",
+    "deploy": "NODE_ENV=production webpack -p --config webpack.production.config.js",
     "start": "node backend/server.js"
   },
   "dependencies": {
@@ -27,7 +27,6 @@
     "babel-loader": "^5.3.2",
     "css-loader": "^0.19.0",
     "file-loader": "^0.8.5",
-    "image-webpack-loader": "^1.8.0",
     "node-libs-browser": "^0.5.2",
     "style-loader": "^0.12.4",
     "url": "^0.11.0",
