@@ -429,7 +429,6 @@ var VTEditor = React.createClass({
 				</div>
 				{exampleEditor}
 				{exampleGallery}
-
 			</div>);
 		},
 

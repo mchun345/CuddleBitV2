@@ -65,7 +65,7 @@ var IconVis = React.createClass({
 	},
 	getDefaultProps: function() {
 	    return {
-	      height: 50, //was 25
+	      height: 100, //was 25
 	      width:'100%',
 	      visColor:'#4C4233',
 	      background:"#FAFAFA",
@@ -90,19 +90,14 @@ var IconVis = React.createClass({
 							scaleY,
 							this.props.resolution
         )
-		// this._visPath = this.computeWaveformPath(
-		// 							this.props.vticon,
-		// 							scaleX, 
-		// 							scaleY,
-		// 							this.props.resolution, 
-		// 							this.props.maxFrequencyRendered, 
-		// 							this.props.limitFrequencies
-		// );
+		var actual_height = this.props.height / 2;
+
 		if (this.props.logValues) {
+			
 			var the_path = {
-				range:this.props.height/2,
-				path:this._visPath,
-				name:this.props.name
+				range: actual_height,
+				path: this._visPath,
+				name: this.props.name
 			}
 			this.emit('path', the_path);
 		}
