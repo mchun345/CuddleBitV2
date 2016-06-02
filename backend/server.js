@@ -52,7 +52,7 @@ function makepath(msg) {
 
     for (var i=10; i<values.length; i++) { //TODO: was i=10 a typo? Should it be =0? Who kno
         var v = parseFloat(values[i].split('L')[0]);
-        var value = mapValue(v,frameheight,(frameheight * 2) + frameheight,parameters.servoMin,parameters.servoMax);
+        var value = mapValue(v,frameheight,(frameheight * 2),parameters.servoMin,parameters.servoMax);
         unscaled_points.push(v);
         scaled_points.push(value);
     }
@@ -101,8 +101,8 @@ function doSetTimeout(i) {
         //log('random val: ',random)
         myMotor.start(rendered_path_example[i]);
         //log('Setting speed to ' + rendered_path_example[i]);
-        log('Rotating servo to ' + rendered_path_main[i]);
-    },2 * i);
+        //log('Rotating servo to ' + rendered_path_main[i]);
+    },5 * i);
     return t;
 }
 
