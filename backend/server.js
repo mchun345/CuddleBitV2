@@ -57,8 +57,8 @@ function makepath(msg) {
         scaled_points.push(value);
     }
 
-    log("max",getMaxOfArray(scaled_points),"min",getMinOfArray(scaled_points))
-    log("max",getMaxOfArray(unscaled_points),"min",getMinOfArray(unscaled_points))
+    //log("max",getMaxOfArray(scaled_points),"min",getMinOfArray(scaled_points))
+    //log("max",getMaxOfArray(unscaled_points),"min",getMinOfArray(unscaled_points))
 
     rendered_path(scaled_points,name);
 }
@@ -102,20 +102,26 @@ function doSetTimeout(i) {
         myMotor.start(rendered_path_example[i]);
         //log('Setting speed to ' + rendered_path_example[i]);
         //log('Rotating servo to ' + rendered_path_main[i]);
-    },5 * i);
+    },i);
     return t;
 }
 
 function processBuffer( inputBuffer ) {
+    log('inside processbuffer!')
+    log('parameters:',parameters)
     var stepSize = Math.floor(parameters.sampleRate/parameters.frameRate);
     var buffer;
+    log('step size: ',stepSize,'inputBuffer length: ',inputBuffer.length)
     for (i=stepSize;i<inputBuffer.length;i+=stepSize){
+        if (i==stepSize){
+            log('for loop in process()')
+        }
         j = (i-parameters.framesPerBuffer)
         
         buffer = inputBuffer.slice(j,i)
             
         if (buffer.length==0){
-           
+           log('buffer length 0')
             break
         }
         renderBuffer(buffer)
@@ -125,7 +131,7 @@ function processBuffer( inputBuffer ) {
 }
 
 function renderBuffer(inputBuffer) {
-        
+        //log('inside renderbuffer')
         var ampRaw = Math.abs(Math.max.apply(Math, inputBuffer));
 
         //start of pitch analysis///////////////////////////////////////////        
@@ -191,6 +197,26 @@ function mapValue(value, minIn, maxIn, minOut, maxOut){
     return (((value - minIn) / (maxIn - minIn)) * (maxOut - minOut)) + minOut;
 }
 
+
+function processCsv(csvfile){
+    orgSetPoints = []
+    log('csvfile path: '+csvfile)
+    var stream = fs.createReadStream(csvfile);
+
+    var audioBuffer = []
+
+    var csvStream = csv()
+        .on("data", function(d){
+             audioBuffer.push(d[1])
+        })
+        .on("end", function(lines){
+            //log('audioBuffer: ',audioBuffer)
+            processBuffer(audioBuffer); 
+        });
+
+    stream.pipe(csvStream);
+}
+
 //----------------------------------------------------------------------------------
 // Main
 //----------------------------------------------------------------------------------
@@ -213,7 +239,7 @@ function main() {
     //------------------------------------------------------------------------------
     // json poop
     //------------------------------------------------------------------------------
-    importParameters("recordings/1464126410068_parameters.json")
+    importParameters("recordings/test_parameters.json")
 
     ///////////////////////////////////////////////////////////
     // Voodle code
@@ -224,22 +250,9 @@ function main() {
             minFrequency:5,
             maxFrequency:1200
         });
-
-    var stream = fs.createReadStream("recordings/1464126410068_recording.csv");
-
-    var audioBuffer = []
-
-    var csvStream = csv()
-        .on("data", function(d){
-             audioBuffer.push(d[1])
-        })
-        .on("end", function(lines){
-            
-            processBuffer(audioBuffer);
-        });
-
-    stream.pipe(csvStream);
-
+///------legacy box, delete soon-------------------------//
+    //processCsv('recordings/1464126410068_recording.csv') //
+///------------------------------------------------------//
     //------------------------------------------------------------------------------
     // Socket setup
     //------------------------------------------------------------------------------
@@ -279,9 +292,26 @@ function main() {
             log('Rendering...');
             render();
         });
-        socket.on('get_setPoints', function(){
-            log('get_setPoints called!!!!')
-            io.emit('send_setPoints', orgSetPoints);
+        socket.on('load_setPoints', function(filename){
+            console.log('loading set points with', filename)
+            if (filename == undefined){
+                console.log('filename undefined')
+            }
+            else {
+                
+                log('importing new params!')
+                importParameters('recordings/'+filename.split("_")[0]+'_parameters.json')
+                log('params file path: ','recordings/'+filename.split("_")[0]+'_parameters.json')
+                log('processing csv!')
+                console.log("file name:"+filename)
+                processCsv('recordings/'+filename)
+                
+            }
+        });
+        socket.on('get_setPoints', function(filename){
+           
+                io.emit('send_setPoints', orgSetPoints);
+           
            });
     });
 

@@ -6,7 +6,8 @@ var LogStore = require('./logstore.js');
 var saveLoadActions = Reflux.createActions(
 	[
 		'save',
-		'loadMacaronFile'
+		'loadMacaronFile',
+		'loadVoodleFile'
 	]
 );
 
@@ -43,7 +44,15 @@ var saveLoadStore = Reflux.createStore({
 		};
 
 		reader.readAsText(file); //assumes 'utf8'
-	}
+	},
+
+	onLoadVoodleFile(file) {
+		var reader = new FileReader();
+		reader.onload = function(e){
+			var data = reader.result
+			return data
+		}
+	},
 
 });
 
