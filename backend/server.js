@@ -53,8 +53,8 @@ function makepath(msg) {
     for (var i=10; i<values.length; i++) { //TODO: was i=10 a typo? Should it be =0? Who kno
         var v = parseFloat(values[i].split('L')[0]);
         var value = mapValue(v,frameheight,(frameheight * 2),parameters.servoMin,parameters.servoMax);
-        unscaled_points.push(v);
-        scaled_points.push(value);
+        unscaled_points.push(v); //!!! for RibBit3
+        scaled_points.push(parameters.servoMax-value);
     }
 
     //log("max",getMaxOfArray(scaled_points),"min",getMinOfArray(scaled_points))
@@ -102,7 +102,7 @@ function doSetTimeout(i) {
         myMotor.start(rendered_path_example[i]);
         //log('Setting speed to ' + rendered_path_example[i]);
         //log('Rotating servo to ' + rendered_path_main[i]);
-    },i);
+    },i*3);
     return t;
 }
 
@@ -240,7 +240,7 @@ function main() {
     // json poop
     //------------------------------------------------------------------------------
     importParameters("recordings/test_parameters.json")
-
+    console.log('default parameters: ',parameters)
     ///////////////////////////////////////////////////////////
     // Voodle code
     ///////////////////////////////////////////////////////////

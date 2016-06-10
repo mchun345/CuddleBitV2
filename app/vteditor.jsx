@@ -300,7 +300,7 @@ var VTEditor = React.createClass({
 
 
 		var designStyle = {
-			width:"44%",
+			width:"100%",
 			marginLeft:'auto',
 			marginRight:'auto',
 			display:"block",
@@ -308,7 +308,7 @@ var VTEditor = React.createClass({
 			borderWidth:0
 		};
 		var exampleStyle = {
-			width:"44%",
+			width:"0%",
 			marginLeft:'auto',
 			marginRight:'auto',
 			display:"block",
@@ -398,13 +398,7 @@ var VTEditor = React.createClass({
 						name="main"
 						playing={this.state.playback.playing}
 						mute={this.state.playback.mute}/>
-					<PlayHead name="main"
-						displayPlayhead={this.state.vticons["main"].selected}
-						scaleX={scaleXMain}
-						currentTime={this.state.playback.currentTime}
-						duration={design_icon.duration}
-						keyframeCircleRadius={this.props.keyframeCircleRadius}
-						playheadFill={this.props.playheadFill}/>
+					
 					<IconVis name="main"
 						scaleX={scaleXMain}
 						vticon={design_icon}
