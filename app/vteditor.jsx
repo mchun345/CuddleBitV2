@@ -398,7 +398,13 @@ var VTEditor = React.createClass({
 						name="main"
 						playing={this.state.playback.playing}
 						mute={this.state.playback.mute}/>
-					
+					<PlayHead name="main"
+						displayPlayhead={this.state.vticons["main"].selected}
+						scaleX={scaleXMain}
+						currentTime={this.state.playback.currentTime}
+						duration={design_icon.duration}
+						keyframeCircleRadius={this.props.keyframeCircleRadius}
+						playheadFill={this.props.playheadFill}/>
 					<IconVis name="main"
 						scaleX={scaleXMain}
 						vticon={design_icon}
