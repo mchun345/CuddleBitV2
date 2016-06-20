@@ -1,6 +1,8 @@
 import Reflux from 'reflux';
 
 var LogStore = require('./logstore.js');
+var Parameters = require('../classes/parameters.js');
+var params = new Parameters();
 
 var vticonActions = Reflux.createActions(
 	[
@@ -33,7 +35,9 @@ var vticonActions = Reflux.createActions(
 		'redo',
 		'reset', 
 
-		'deleteSelectedKeyframes'
+		'deleteSelectedKeyframes',
+		'simplifyKeyframes',
+		'xScaleKeyframes'
 	]
 
 );
@@ -42,11 +46,9 @@ var vticonActions = Reflux.createActions(
 var vticonStore = Reflux.createStore({
 
 	listenables: [vticonActions],
-
 	init : function() {
-		this._data = {
-
-					main: { //left side editor
+		// console.log(ParameterStore.actions.getParameters())
+		this._defaultParams = { //left side editor
 						duration: 3000, //ms //was 3000
 
 						selected: true,
@@ -56,91 +58,17 @@ var vticonStore = Reflux.createStore({
 							time1:0,
 							time2:0
 						},
+						parameters: params.getParameters(),
+		};
 
-						parameters: {
-							amplitude: {
-								valueScale:[0,1], //normalized
-								data : [
-									{ id: 0, t: 1500, value:0.5, selected:false}]
-							},
+		this._data = {
+					main: deepCopy(this._defaultParams),
+					example: deepCopy(this._defaultParams),
+		};
 
-							frequency: {
-								valueScale:[50,500], //Hz
-								data : [
-									{ id: 1, t: 1500, value:300, selected:false}]
-							},
-							ampTex: {
-								valueScale:[0,1], //normalized
-								data : [
-									{ id: 2, t: 1500, value:0.5, selected:false}]
-							},
-							freqTex: {
-								valueScale:[10,50], //Hz
-								data : [
-									{ id: 3, t: 1500, value:25, selected:false}]
-							},
-
-							bias: {
-								valueScale:[0.10,0.90], //normalized
-								data : [
-									{ id: 4, t: 1500, value:0.5, selected:false}]
-							}
-
-						}
-					},
-
-					example: { //right side editor
-						duration: 3000, //ms 
-
-						selected: true,  
-
-						selectedTimeRange: {
-							active:false, 
-							time1:0, 
-							time2:0 
-						},
-
-						parameters: {
-							amplitude: {
-								valueScale:[0,1], 
-								data : [
-									{ id: 6, t: 600, value:0.5, selected:false},  
-									{ id: 7, t: 1500, value:1, selected:false},   
-									{ id: 8, t: 3000, value:0, selected:false}]   
-							},
-
-							frequency: {
-								valueScale:[50,500], //Hz , was [50,500]
-								data : [
-									{ id: 9, t: 1500, value:1, selected:false}]
-							},
-
-							ampTex: {
-								valueScale:[0,1], //normalized
-								data : [
-									{ id: 2, t: 1500, value:0.5, selected:false}]
-							},
-							freqTex: {
-								valueScale:[10,50], //Hz
-								data : [
-									{ id: 3, t: 1500, value:25, selected:false}]
-							},
-
-							bias: {
-								valueScale:[0.10,0.90], //normalized
-								data : [
-									{ id: 12, t: 1500, value:0.5, selected:false}]
-
-									
-							}
-						}
-					}
-						
-					};
 
 		this._previousStates = []; //for undo
 		this._nextStates = []; //for redo
-
 		this._kfuidCount = 0;
 		for (var n in this._data) {
 			for (var p in this._data[n].parameters) {
@@ -242,6 +170,7 @@ var vticonStore = Reflux.createStore({
 
 	onNewMultipleKeyframes(parameter_keyframe_map, overwrite=true, name="")
 	{
+		console.log("onNewMultipleKeyframes", parameter_keyframe_map)
 		this._saveStateForUndo();
 		name = this._selectVTIcon(name);
 		var leftover_ids_to_delete = [];
@@ -598,6 +527,119 @@ var vticonStore = Reflux.createStore({
 		this.trigger(this._data);
 	},
 
+	onSimplifyKeyframes(name="") {
+		// right now scales between first and last selected point
+		// TODO add this to a in/outpoint framework
+		// var inpoint = 0;
+		// var outpoint = 100;
+
+		var kfNotSelected = function(value) {
+			return !value.selected;
+		};
+		var kfSelected = function(value) {
+			return value.selected;
+		};
+
+		var compare = function (a, b) {
+		  if (a.t < b.t) {
+		    return -1;
+		  }
+		  if (a.t > b.t) {
+		    return 1;
+		  }
+		  // a must be equal to b
+		  return 0;
+		}
+
+
+		name = this._selectVTIcon(name);
+
+		LogStore.actions.log("VTICON_SIMPLIFYKEYFRAMES_"+name);
+
+		this._saveStateForUndo();
+
+		for (var p in this._data[name].parameters) {
+			// for(var i = 3; )
+			var keep = this._data[name].parameters[p].data.filter(kfNotSelected);
+			var simplify = this._data[name].parameters[p].data.filter(kfSelected).filter(function(e,i,arr){
+				if (i % 2 == 0 || i == arr.length - 1) {
+					return true;
+				} else {
+					return false;
+				}
+			});
+			this._data[name].parameters[p].data = keep.concat(simplify).sort(compare);
+		}
+
+		this.trigger(this._data);
+	},
+
+	onXScaleKeyframes(scaleFactor,name="") {
+
+		var kfNotSelected = function(value) {
+			return !value.selected;
+		};
+		var kfSelected = function(value) {
+			return value.selected;
+		};
+
+		var compare = function (a, b) {
+		  if (a.t < b.t) {
+		    return -1;
+		  }
+		  if (a.t > b.t) {
+		    return 1;
+		  }
+		  // a must be equal to b
+		  return 0;
+		}
+
+		name = this._selectVTIcon(name);
+
+		LogStore.actions.log("VTICON_XSCALEKEYFRAMES_"+name);
+
+		this._saveStateForUndo();
+
+		for (var p in this._data[name].parameters) {
+			
+			var originalPoints = this._data[name].parameters[p].data.sort(compare)
+			
+			var middle = originalPoints.filter(kfSelected);
+
+			if (middle.length > 0) {
+				var start_i = originalPoints.indexOf(middle[0])
+				var end_i = originalPoints.indexOf(middle[middle.length - 1])
+				var end_t = middle[middle.length - 1].t
+				var start_t = middle[0].t
+
+
+				var start = originalPoints.slice(0,start_i);
+				var end = originalPoints.slice(end_i + 1,originalPoints.length);
+
+				middle.forEach(function(m,i,arr){
+					m.t = Math.floor(m.t + ((m.t - start_t) * scaleFactor));
+				})
+
+				var end_pos = middle[middle.length - 1].t;
+				
+				end.forEach(function(e){
+					e.t = (e.t - end_t) + end_pos
+				})
+
+				var ret = start.concat(end).concat(middle).sort(compare).filter(function(kf){
+					if (kf.t > this._defaultParams.duration) {
+						return false;
+					} else {
+						return true;
+					}
+				}.bind(this));
+				this._data[name].parameters[p].data = ret;
+			}
+		}
+
+		this.trigger(this._data);
+	},
+
 	/**
 	 * KF Guards
 	 */
@@ -734,95 +776,8 @@ var vticonStore = Reflux.createStore({
 	 onReset() {
 	 	this._data = {
 
-					main: { //left side editor
-						duration: 3000, //ms //was 3000
-
-						selected: true,
-
-						selectedTimeRange: {
-							active:false,
-							time1:0,
-							time2:0
-						},
-
-						parameters: {
-							amplitude: {
-								valueScale:[0,1], //normalized
-								data : [
-									{ id: 0, t: 1500, value:0.5, selected:false}]
-							},
-
-							frequency: {
-								valueScale:[50,500], //Hz
-								data : [
-									{ id: 1, t: 1500, value:300, selected:false}]
-							},
-							ampTex: {
-								valueScale:[0,1], //normalized
-								data : [
-									{ id: 2, t: 1500, value:0.5, selected:false}]
-							},
-							freqTex: {
-								valueScale:[10,50], //Hz
-								data : [
-									{ id: 3, t: 1500, value:25, selected:false}]
-							},
-
-							bias: {
-								valueScale:[0.10,0.90], //normalized
-								data : [
-									{ id: 4, t: 1500, value:0.5, selected:false}]
-							}
-
-						}
-					},
-
-					example: { //right side editor
-						duration: 3000, //ms 
-
-						selected: true,  
-
-						selectedTimeRange: {
-							active:false, 
-							time1:0, 
-							time2:0 
-						},
-
-						parameters: {
-							amplitude: {
-								valueScale:[0,1], 
-								data : [
-									{ id: 6, t: 600, value:0.5, selected:false},  
-									{ id: 7, t: 1500, value:1, selected:false},   
-									{ id: 8, t: 3000, value:0, selected:false}]   
-							},
-
-							frequency: {
-								valueScale:[50,500], //Hz , was [50,500]
-								data : [
-									{ id: 9, t: 1500, value:1, selected:false}]
-							},
-
-							ampTex: {
-								valueScale:[0,1], //normalized
-								data : [
-									{ id: 2, t: 1500, value:0.5, selected:false}]
-							},
-							freqTex: {
-								valueScale:[10,50], //Hz
-								data : [
-									{ id: 3, t: 1500, value:25, selected:false}]
-							},
-
-							bias: {
-								valueScale:[0.10,0.90], //normalized
-								data : [
-									{ id: 12, t: 1500, value:0.5, selected:false}]
-
-									
-							}
-						}
-					}
+					main: deepCopy(this._defaultParams),
+					example: deep(this._defaultParams),
 						
 					};
 
@@ -849,9 +804,22 @@ var vticonStore = Reflux.createStore({
 	});
 
 
-
+// recursive function to clone an object. If a non object parameter
+// is passed in, that parameter is returned and no recursion occurs.
+function deepCopy(obj) {
+    if (obj === null || typeof obj !== 'object') {
+        return obj;
+    }
+    var temp = obj.constructor(); // give temp the original obj's constructor
+    for (var key in obj) {
+        temp[key] = deepCopy(obj[key]);
+    }
+ 
+    return temp;
+}
 
 module.exports = {
 	actions:vticonActions,
 	store:vticonStore
 };
+

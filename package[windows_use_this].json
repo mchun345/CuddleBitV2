@@ -2,7 +2,7 @@
   "scripts": {
     "build": "webpack",
     "dev": "webpack-dev-server --devtool eval --progress --colors --hot --content-base build",
-    "deploy": "NODE_ENV=production webpack -p --config webpack.production.config.js",
+    "deploy": "set NODE_ENV=production && webpack -p --config webpack.production.config.js",
     "start": "node backend/server.js"
   },
   "dependencies": {
@@ -10,10 +10,10 @@
     "d3": "^3.5.6",
     "exports-loader": "^0.6.2",
     "express": "^4.13.3",
-    "fast-csv": "^2.0.0",
     "firebase": "^2.3.1",
+    "fast-csv": "^2.0.0",
     "imports-loader": "^0.6.4",
-    "johnny-five": "^0.9.44",
+    "johnny-five": "^0.9.44", 
     "pitchfinder": "^2.0.3",
     "react": "^0.13.3",
     "reflux": "^0.2.12",

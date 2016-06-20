@@ -1,11 +1,30 @@
 # Macaron
 Vibrotactile Icon Editor
 
+
+### Fun keyboard shortcuts:
+
+`arrow keys` : move playhead left or right.  
+`ctrl`+(`>`/`<`) : x-scale  
+`ctrl`+`/` : Divides selected keyframes in half.  
+`space` : play.  
+`backspace`/`delete` : remove selected keyframe(s)  
+`ctrl`+(`left`/`right`) : increment playhead  
+
+
+#### Changelog:
+
+2016.05.31 : added a random noise parameter.  
+2016.05.31 : changed simplify shortcut from ctrl+s to ctrl+/ because ctrl+s also saves the page.  
+2016.05.30 : added x-scale functionality with ctrl-< and ctrl->, where selected points are scaled, and the rest are translated.  
+2016.05.30 : added a simplify functionality with ctrl-s, where points are decimated by half  
+
 ##
 
 Quick install:
 
 `npm install`
+
 `npm run deploy`
 
 Run with:

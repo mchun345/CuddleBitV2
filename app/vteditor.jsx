@@ -1,4 +1,3 @@
-
 import React from 'react';
 import Reflux from 'reflux';
 import d3 from 'd3';
@@ -165,7 +164,7 @@ var VTEditor = React.createClass({
    	},
 
    	_handleKeyboard : function(e) {
-
+   		// console.log(e.keyCode)
    		//use keyCode because it's supported by more browsers
    		//especially Safari, which has best performance so far
    		//look for deprecations in future versions
@@ -239,6 +238,27 @@ var VTEditor = React.createClass({
    					e.preventDefault();
    				}
    				break;
+   			case 191: // forward slash "/"
+   				if (e.ctrlKey || e.metaKey) {
+   					// VTIconStore.actions.redo();
+   					VTIconStore.actions.simplifyKeyframes();
+   					// e.preventDefault();
+   				}
+   				break;
+			case 190: //<
+   				if (e.ctrlKey || e.metaKey) {
+   					// VTIconStore.actions.redo();
+   					VTIconStore.actions.xScaleKeyframes(0.1);
+   					// e.preventDefault();
+   				}
+   				break;
+   			case 188: //>
+   				if (e.ctrlKey || e.metaKey) {
+   					// VTIconStore.actions.redo();
+   					VTIconStore.actions.xScaleKeyframes(-0.1);
+   					// e.preventDefault();
+   				}
+   				break;
    			case 85: //u
    			case 90: //z
    				if(e.ctrlKey || e.metaKey) {
@@ -263,14 +283,14 @@ var VTEditor = React.createClass({
 	render : function() {
 
 		// TODO: sound of SELECTED icon
-		var frequency = this.interpolateParameter('frequency', this.state.playback.currentTime, this.state.playback.playingIcon);
-		var amplitude = this.interpolateParameter('amplitude', this.state.playback.currentTime, this.state.playback.playingIcon);
+		// var frequency = this.interpolateParameter('frequency', this.state.playback.currentTime, this.state.playback.playingIcon);
+		// var amplitude = this.interpolateParameter('amplitude', this.state.playback.currentTime, this.state.playback.playingIcon);
 
-		var amplitude_for_soundgen = 0;
-		if (this.props.playbackAtEndOfVTIcon)
-		{
-			amplitude_for_soundgen = amplitude;
-		}
+		// var amplitude_for_soundgen = 0;
+		// if (this.props.playbackAtEndOfVTIcon)
+		// {
+			// amplitude_for_soundgen = amplitude;
+		// }
 
 		var scaleXMain = this.state.scales.main.scaleTimeline;
 		var scaleXExample = this.state.scales.example.scaleTimeline;
@@ -280,7 +300,7 @@ var VTEditor = React.createClass({
 
 
 		var designStyle = {
-			width:"44%",
+			width:"100%",
 			marginLeft:'auto',
 			marginRight:'auto',
 			display:"block",
@@ -288,7 +308,7 @@ var VTEditor = React.createClass({
 			borderWidth:0
 		};
 		var exampleStyle = {
-			width:"44%",
+			width:"0%",
 			marginLeft:'auto',
 			marginRight:'auto',
 			display:"block",
@@ -305,7 +325,7 @@ var VTEditor = React.createClass({
 			exampleStyle.borderColor="white";
 			if (this.state.playback.currentTime < this.state.vticons.main.duration)
 			{
-				amplitude_for_soundgen = amplitude;
+				// amplitude_for_soundgen = amplitude;
 			}
 
 		} else {
@@ -313,7 +333,7 @@ var VTEditor = React.createClass({
 			exampleStyle.borderColor="black";
 			if (this.state.playback.currentTime < this.state.vticons.example.duration)
 			{
-				amplitude_for_soundgen = amplitude;
+				// amplitude_for_soundgen = amplitude;
 			}
 		}
 
@@ -372,8 +392,6 @@ var VTEditor = React.createClass({
 		return (
 			<div id="app" ref="appRef">
 				<EditorHeader />
-				<SoundGen frequency={frequency} amplitude={amplitude_for_soundgen} mute={this.state.playback.mute} />
-				
 
 				<div name="main" id="maineditor" ref="mainEditorRef" style={designStyle}>
 					<ControlBar
@@ -411,7 +429,6 @@ var VTEditor = React.createClass({
 				</div>
 				{exampleEditor}
 				{exampleGallery}
-
 			</div>);
 		},
 

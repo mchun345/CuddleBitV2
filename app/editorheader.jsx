@@ -14,8 +14,9 @@ var UserAgreement = require('./useragreement.jsx');
 var UserInstructions = require('./userinstructions.jsx');
 
 
-var IO = require('./../thirdparty/socket/socket.io.js');
-var socket = io();
+var io = require('./../thirdparty/socket/socket.io.js');
+
+var FileInput = require('react-file-input');
 
 //for reset button
 var VTIconStore = require('./stores/vticonstore.js');
@@ -23,6 +24,21 @@ var VTIconStore = require('./stores/vticonstore.js');
 
 var EditorHeader = React.createClass({
 
+	
+
+	getInitialState: function(){
+		return{
+			socket:{}
+		}
+	},
+	emit: function(st,msg) {
+		this.state.socket.emit(st,msg)
+	},
+	componentDidMount: function() {
+		var socket = io.connect("http://localhost:3000");
+		this.setState({socket:socket});
+
+	},
 	mixins : [
 				Reflux.connect(AnimationStore.store, 'animation'), //emitted updates go to 'animation' key
 				Reflux.connect(StudyStore.store, 'study'), //emitted updates go to 'study' key
@@ -42,7 +58,10 @@ var EditorHeader = React.createClass({
 			displayRenderButton:true,
 			displayStopButton:true,
 			displayResetButton:true,
-			uploadFileID:"uploadedFile"
+			displayGetSetPointsButton:true,
+			displayLoadVoodleButton:true,
+			uploadFileID:"uploadedFile",
+			uploadVoodleFileID: "voodleFile"
 
 
 	    }
@@ -70,29 +89,63 @@ var EditorHeader = React.createClass({
 	},
 
 	_onLoadClick : function(e) {
+		
+
 		var uploadedFiles = document.getElementById(this.props.uploadFileID);
+		console.log('normal _onLoadClick uploaded file: ',uploadedFiles.files[0].name)
 		if (uploadedFiles.files.length > 0) {
 			SaveLoadStore.actions.loadMacaronFile(uploadedFiles.files[0]);
+
 		}
 		uploadedFiles.value = [];
 	},
 
 	_onTestClick : function(e) {
-		socket.emit('test');
+		this.emit('test');
 	},
 
 	_onRenderClick : function(e) {
-		socket.emit('render');
+		console.log("_onRenderClick called!!")
+		this.emit('render');
 	},
 
 	_onStopClick : function(e) {
-		socket.emit('stop_render');
+		this.emit('stop_render');
 	},
 
 	_onResetClick : function(e) {
 		VTIconStore.actions.reset();
 	},
+	_onGetSetPointsClick : function(e) {
+		this.emit('get_setPoints');
+	},
 
+	_onLoadSetPointsClick: function(e){
+
+		console.log('in _onLoadSetPointsClick!')
+		var uploadedFiles = document.getElementById(this.props.uploadVoodleFileID);
+		console.log('uploadedFiles: ',uploadedFiles)
+		if (uploadedFiles.files.length > 0) {
+			console.log('name of file: ',uploadedFiles.files[0].name)
+			this.emit('load_setPoints',uploadedFiles.files[0].name)
+
+		}
+		uploadedFiles.value = [];
+
+	},
+	_onLoadSetPointsButtonClick: function(e){
+		console.log('in _onLoadSetPoints~BUTTON~Click')
+		document.getElementById(this.props.uploadVoodleFileID).click();
+	},
+	handleChange: function(event) {
+	   console.log('Selected file:', event.target.files[0].name);
+	   name = event.target.files[0].name
+	   if(name != undefined){
+	   		console.log('we are emitting!!!!')
+	   		this.emit('load_setPoints', name);
+
+	   	}
+	 },
 	/**
 	* Rendering
 	*
@@ -200,28 +253,28 @@ var EditorHeader = React.createClass({
 		{
 			resetButton = (<button onClick={this._onResetClick}>Reset</button>);
 		}
+		var getSetPointsButton = <span />
+		if (this.props.displayGetSetPointsButton)
+		{
+			getSetPointsButton = (<button onClick={this._onGetSetPointsClick}>Render set points</button>);
+		}	
 
+		var loadVoodleButton = <span />
+		if (this.props.displayLoadVoodleButton)
+		{
+			
+
+			loadVoodleButton = (<span>
+					<input type="file" className='hidden' id={this.props.uploadVoodleFileID} onChange={this._onLoadSetPointsClick}></input>
+					<a class="btn header" style={buttonStyle} onClick={this._onLoadSetPointsButtonClick} ><i className="fa fa-upload"></i>Load Voodle</a>
+					</span>);
+		}
 
 		return (
-			// <div className="header" style={headerStyle}>
-			// 	{startButton}		
-			// 	<span className="title unselectable" > Macaron </span>
-			// 	<span className="menu">
-			// 		{animationOptionDisplay}
-			// 		{interfaceModeDisplay}
-			// 		<UserInstructions />
-			// 		<UserAgreement />
-			// 		{saveButton}
-			// 		{loadButton}
-			// 		{saveButton}
-			// 	    {testButton}
-			// 	    {renderButton}
-			// 	    {stopButton}
+			
+			<div>
 
-			// 	</span>
-
-
-			// </div>
+			
 
 			<div className="header" style={headerStyle}>
 				
@@ -235,10 +288,31 @@ var EditorHeader = React.createClass({
 				{startButton}
 				{stopButton}
 				{resetButton}
+				{getSetPointsButton}
+				{loadVoodleButton}
+				
 			</div>
+				<form>
+        			<FileInput name="voodleInput"
+                  		 accept=".csv"
+                  		 placeholder="Voodle file"
+                  		 className="inputClass"
+                  		 onChange={this.handleChange} />
+      			</form>
+		</div>
+			
 			);
 	}
 
 });
+
+
+
+
+
+
+
+
+
 
 module.exports = EditorHeader;
